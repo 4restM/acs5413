@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AddTodoModal from '@/components/add-todo-modal';
+import TodoItem from '@/components/todo-item';
 import { Colors } from '@/constants/ou-theme';
 
 type Todo = { id: string; text: string };
 
 export default function HomeScreen() {
   const [todos, setTodos] = useState<Todo[]>([]);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  function addTodo(text: string) {
+    // date.now used for unique id
+    setTodos(prev => [...prev, { id: Date.now().toString(), text }]);
+    setModalVisible(false);
+  }
 
   function deleteTodo(id: string) {
     setTodos(prev => prev.filter(t => t.id !== id));
@@ -29,12 +38,7 @@ export default function HomeScreen() {
         data={todos}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <View style={styles.row}>
-            <Text style={styles.itemText}>{item.text}</Text>
-            <TouchableOpacity onPress={() => deleteTodo(item.id)} style={styles.deleteBtn}>
-              <Text style={styles.deleteBtnText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
+          <TodoItem text={item.text} onDelete={() => deleteTodo(item.id)} />
         )}
         contentContainerStyle={todos.length === 0 ? styles.emptyContainer : styles.listContent}
         ListEmptyComponent={
@@ -45,12 +49,19 @@ export default function HomeScreen() {
         }
       />
 
-      {/* create placeholder */}
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.addButton} onPress={() => {}}>
+        {/* TouchableOpacity UX component of react native*/}
+        <TouchableOpacity style={styles.addButton} onPress={() => setModalVisible(true)}>
           <Text style={styles.addButtonText}>＋ Add Task</Text>
         </TouchableOpacity>
       </View>
+
+        {/* Modal w/ conditional trigger */}
+      <AddTodoModal
+        visible={modalVisible}
+        onAdd={addTodo}
+        onCancel={() => setModalVisible(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -71,24 +82,6 @@ const styles = StyleSheet.create({
   empty: { alignItems: 'center' },
   emptyText: { fontSize: 18, fontWeight: '600', color: Colors.textMuted },
   emptySubtext: { marginTop: 6, fontSize: 14, color: Colors.textMuted },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-    borderRadius: 8,
-    padding: 14,
-    marginHorizontal: 16,
-    marginVertical: 6,
-  },
-  itemText: { flex: 1, fontSize: 16, color: Colors.textDark },
-  deleteBtn: {
-    marginLeft: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: Colors.crimson,
-    borderRadius: 6,
-  },
-  deleteBtnText: { color: Colors.white, fontSize: 13, fontWeight: '600' },
   footer: { padding: 16 },
   addButton: {
     backgroundColor: Colors.crimson,
