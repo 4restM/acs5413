@@ -5,6 +5,9 @@ import AddTodoModal from '@/components/add-todo-modal';
 import TodoItem from '@/components/todo-item';
 import { Colors } from '@/constants/ou-theme';
 
+// typed number bc metro local asset ref
+const ouLogo = require('../../assets/images/OU.png') as number;
+
 type Todo = { id: string; text: string };
 
 export default function HomeScreen() {
@@ -24,12 +27,14 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image
-          source={require('../../assets/images/OU.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
-        <Text style={styles.headerTitle}>OU To-Do</Text>
+        <View style={styles.logoContainer}>
+          <Image
+            source={ouLogo}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </View>
+        <Text style={styles.headerTitle}>ToDos!</Text>
       </View>
 
 
@@ -75,7 +80,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  logo: { width: 40, height: 40, marginRight: 12 },
+  logoContainer: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  logo: { width: 36, height: 36 },
   headerTitle: { fontSize: 22, fontWeight: '700', color: Colors.white },
   listContent: { paddingVertical: 12 },
   emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
