@@ -1,24 +1,52 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { FlatList, Text, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { router } from 'expo-router';
+import AppCard from '@/components/app-card';
+import { APPS } from '@/constants/apps';
+import { Colors } from '@/constants/colors';
+import type { AppItem } from '@/constants/apps';
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar style="dark" />
-      <Text style={styles.text}>HW4 — Grid App</Text>
-    </View>
+      <Text style={styles.title}>Apps</Text>
+      <FlatList
+        data={APPS}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        columnWrapperStyle={styles.row}
+        contentContainerStyle={styles.list}
+        renderItem={({ item }: { item: AppItem }) => (
+          <AppCard
+            app={item}
+            onPress={() => router.push(`/${item.id}`)}
+          />
+        )}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#F2F2F7',
+    backgroundColor: Colors.background,
   },
-  text: {
-    fontSize: 18,
-    color: '#1A1A1A',
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: Colors.label,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 12,
+  },
+  list: {
+    gap: 12,
+    padding: 16,
+  },
+  row: {
+    gap: 12,
   },
 });
