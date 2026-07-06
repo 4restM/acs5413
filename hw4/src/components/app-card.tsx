@@ -1,6 +1,7 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { Pressable, Animated, Text, StyleSheet } from 'react-native';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors } from '@/constants/colors';
+import { usePressScale } from '@/hooks/use-press-scale';
 import type { AppItem } from '@/constants/apps';
 
 type Props = {
@@ -9,29 +10,38 @@ type Props = {
 };
 
 export default function AppCard({ app, onPress }: Props) {
+  const { animatedStyle, onPressIn, onPressOut } = usePressScale();
+
   return (
-    <TouchableOpacity
-      style={styles.card}
+    <Pressable
+      style={styles.pressable}
       onPress={onPress}
+      onPressIn={onPressIn}
+      onPressOut={onPressOut}
       accessibilityRole="button"
       accessibilityLabel={app.label}
     >
-      {app.iconSet === 'ionicons' ? (
-        <Ionicons name={app.iconName as any} size={44} color={app.tint} />
-      ) : (
-        <MaterialCommunityIcons name={app.iconName as any} size={44} color={app.tint} />
-      )}
-      <Text style={styles.label}>{app.label}</Text>
-    </TouchableOpacity>
+      <Animated.View style={[styles.card, animatedStyle]}>
+        {app.iconSet === 'ionicons' ? (
+          <Ionicons name={app.iconName as any} size={68} color={app.tint} />
+        ) : (
+          <MaterialCommunityIcons name={app.iconName as any} size={68} color={app.tint} />
+        )}
+        <Text style={styles.label}>{app.label}</Text>
+      </Animated.View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  card: {
+  pressable: {
     flex: 1,
     aspectRatio: 1,
+  },
+  card: {
+    flex: 1,
     backgroundColor: Colors.card,
-    borderRadius: 16,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,

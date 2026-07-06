@@ -1,3 +1,5 @@
+// constants for the apps displayed in flatlist
+
 export type IconSet = 'ionicons' | 'material-community';
 
 export type AppItem = {

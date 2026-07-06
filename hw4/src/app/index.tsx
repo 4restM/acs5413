@@ -12,6 +12,7 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <StatusBar style="dark" />
       <Text style={styles.title}>Apps</Text>
+      {/* flatlist creats the grid, SafeAreaView utilizes flexbox for the cards*/}
       <FlatList
         data={APPS}
         keyExtractor={(item) => item.id}
