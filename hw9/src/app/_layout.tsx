@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 
 const createDbIfNeeded = async (db: SQLiteDatabase) => {
   try {
+    // creats user table if it doesn't exist, basically init 
     await db.execAsync(
       "CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, image TEXT)"
     );

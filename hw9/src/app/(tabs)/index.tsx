@@ -25,11 +25,12 @@ export default function TabHome() {
     }, [])
   );
 
+  // Read
   const loadData = async () => {
     const result = await database.getAllAsync<User>("SELECT * FROM users");
     setData(result);
   };
-
+ // Delete
   const handleDelete = (item: User) => {
     Alert.alert(
       "Delete User",

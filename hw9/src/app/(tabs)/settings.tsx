@@ -7,8 +7,7 @@ export default function TabSettings() {
     <View style={styles.container}>
       <Text style={styles.heading}>Settings</Text>
       <Text style={styles.body}>
-        hw9 — Offline SQLite CRUD demo. Data is stored locally in
-        hw9.db.
+        hw9 — Offline SQLite CRUD demo
       </Text>
     </View>
   );

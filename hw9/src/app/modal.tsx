@@ -38,6 +38,7 @@ export default function ItemModal() {
     setEmail(result?.email ?? "");
   };
 
+  // create
   const handleSave = async () => {
     try {
       await database.runAsync(
@@ -49,7 +50,7 @@ export default function ItemModal() {
       console.error("Error saving item:", error);
     }
   };
-
+ // update
   const handleUpdate = async () => {
     try {
       await database.runAsync(
