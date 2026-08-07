@@ -25,12 +25,14 @@ import type { BinderCard, BinderListKind } from '@/types/card';
 export default function BinderScreen() {
   const params = useLocalSearchParams<{ listKind?: string }>();
   const { haves, wants, isLoading, errorMessage, refresh } = useBinder();
+  // Home passes the list to open, but route params still need validation.
   const requestedListKind: BinderListKind | null =
     params.listKind === 'haves' || params.listKind === 'wants' ? params.listKind : null;
   const [listKind, setListKind] = useState<BinderListKind>(requestedListKind ?? 'haves');
   const [query, setQuery] = useState('');
   const cards = listKind === 'haves' ? haves : wants;
 
+  // Tabs stay mounted, so apply the Home link again whenever Binder gets focus.
   useFocusEffect(
     useCallback(() => {
       if (requestedListKind) setListKind(requestedListKind);
@@ -235,7 +237,6 @@ const styles = StyleSheet.create({
   separator: {
     backgroundColor: colors.border,
     height: hairline,
-    // Indented past the thumbnail so the rule aligns with the card name.
     marginLeft: 46,
   },
   toolbar: {

@@ -23,6 +23,7 @@ export default function MapScreen() {
     selectTradeStore,
   } = useStores();
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+  // Do not ask for location on web because it uses the store-list fallback.
   const [locationState, setLocationState] = useState<LocationState>(
     Platform.OS === 'web' ? 'unavailable' : 'idle'
   );
@@ -42,8 +43,7 @@ export default function MapScreen() {
     if (Platform.OS === 'web') return;
     setLocationState('checking');
     try {
-      // DISCUSSION POINT: Only foreground permission is requested. The app shows the user
-      // dot while this screen is open and never tracks location in the background.
+      // The map only needs location while this screen is open.
       const permission = await Location.requestForegroundPermissionsAsync();
       if (!permission.granted) {
         setLocationState('denied');

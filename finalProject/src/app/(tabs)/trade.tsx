@@ -28,8 +28,10 @@ export default function TradeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   const [manualUid, setManualUid] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // The camera repeats callbacks while a QR is visible; this blocks duplicate routes.
   const scannedRef = useRef(false);
 
+  // Allow another scan after returning from a match.
   useFocusEffect(
     useCallback(() => {
       scannedRef.current = false;

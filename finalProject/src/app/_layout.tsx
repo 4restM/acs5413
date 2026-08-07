@@ -31,6 +31,7 @@ function AppNavigator() {
   const [cacheIsLoading, setCacheIsLoading] = useState(true);
   const [cacheError, setCacheError] = useState<string | null>(null);
 
+  // Build the cache table now so the first import does not have to wait for it.
   useEffect(() => {
     initializeCardCache()
       .catch((error: unknown) => {
@@ -40,6 +41,7 @@ function AppNavigator() {
       .finally(() => setCacheIsLoading(false));
   }, []);
 
+  // Ask once at startup so the notification prompt does not interrupt a trade.
   useEffect(() => {
     configureNotifications().catch((error: unknown) => {
       console.warn('Notification setup failed:', error);

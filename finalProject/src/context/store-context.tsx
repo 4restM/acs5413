@@ -37,6 +37,7 @@ export function StoreProvider({ children }: PropsWithChildren) {
     setIsLoading(true);
     setErrorMessage(null);
     try {
+      // Seed the built-in shops only when Firebase is empty.
       let loadedStores = await getStores();
       if (loadedStores.length === 0) {
         loadedStores = await seedStores(uid);

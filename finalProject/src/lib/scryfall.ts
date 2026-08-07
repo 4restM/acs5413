@@ -77,6 +77,7 @@ function toIdentifier(entry: CardListEntry): ScryfallIdentifier {
 }
 
 function toCardMetadata(card: ScryfallCard): CardMetadata {
+  // Double-faced cards keep their images on each face, so use the front one.
   const imageUris = card.image_uris ?? card.card_faces?.[0]?.image_uris;
   return {
     cardKey: normalizeCardName(card.name),
@@ -95,6 +96,7 @@ function toCardMetadata(card: ScryfallCard): CardMetadata {
 export async function resolveCardMetadata(
   entries: CardListEntry[]
 ): Promise<ResolveCardMetadataResult> {
+  // Only send one Scryfall lookup per card.
   const uniqueEntries = [...new Map(entries.map((entry) => [entry.cardKey, entry])).values()];
   const cachedCards = await getCachedCards(uniqueEntries.map((entry) => entry.cardKey));
   const misses = uniqueEntries.filter((entry) => !cachedCards[entry.cardKey]);
@@ -102,8 +104,7 @@ export async function resolveCardMetadata(
   let networkRequests = 0;
 
   const batches = chunk(misses, COLLECTION_LIMIT);
-  // DISCUSSION POINT: Scryfall accepts at most 75 identifiers per collection request.
-  // Batches run sequentially with 500 ms spacing to respect its published rate guidance.
+  // Scryfall caps this endpoint at 75 cards, so pause between batches.
   for (let index = 0; index < batches.length; index += 1) {
     if (index > 0) await wait(REQUEST_DELAY_MS);
 
@@ -119,6 +120,7 @@ export async function resolveCardMetadata(
     });
   }
 
+  // Save the fetched cards after every batch finishes.
   await saveCardsToCache(Object.values(fetchedCards));
   const cards = { ...cachedCards, ...fetchedCards };
 

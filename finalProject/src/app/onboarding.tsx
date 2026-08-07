@@ -22,6 +22,7 @@ export default function OnboardingScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const trimmedHandle = handle.trim();
+  // Trim before checking length and disable while the profile is saving.
   const canSubmit = trimmedHandle.length >= 2 && !isSaving;
 
   async function submitHandle() {

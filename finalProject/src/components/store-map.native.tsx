@@ -22,6 +22,7 @@ export default function StoreMapNative({
 }: StoreMapProps) {
   const mapRef = useRef<MapView>(null);
 
+  // Recenter once when location arrives, then leave the map under user control.
   useEffect(() => {
     if (!userCoordinate) return;
     mapRef.current?.animateToRegion(
@@ -31,8 +32,7 @@ export default function StoreMapNative({
   }, [userCoordinate]);
 
   return (
-    // DISCUSSION POINT: Omitting `provider` lets iOS use Apple Maps and Android use the
-    // Expo-provided Google Maps setup, so this works in Expo Go without our own API key.
+    // Each platform can use the map provider already available in Expo Go.
     <MapView
       initialRegion={OKC_METRO_REGION}
       ref={mapRef}
@@ -71,13 +71,14 @@ const styles = StyleSheet.create({
     maxWidth: 240,
     padding: spacing.xs,
   },
+  // Native callouts use a light background outside the app theme.
   calloutAddress: {
     color: '#3B4048',
     fontSize: 12,
     lineHeight: 17,
   },
   calloutHint: {
-    color: '#8A6D08',
+    color: '#1F5FBF',
     fontSize: 11,
     fontWeight: '500',
     marginTop: spacing.xs,

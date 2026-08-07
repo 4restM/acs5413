@@ -1,7 +1,6 @@
 import type { SeedStore } from '@/types/store';
 
-// Coordinates were verified against the stores' current street addresses in August 2026.
-// Stable IDs let multiple first-run devices seed the same Firebase keys without duplicates.
+// Coordinates checked in August 2026. Fixed IDs prevent duplicate seed records.
 export const SEED_STORES: SeedStore[] = [
   {
     id: 'edmond-unplugged',

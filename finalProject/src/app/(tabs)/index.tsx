@@ -36,9 +36,11 @@ export default function HomeScreen() {
     errorMessage: storeError,
     refresh: refreshStores,
   } = useStores();
+  // Tiles count copies; the smaller line counts unique card names.
   const haveQuantity = haves.reduce((total, card) => total + card.qty, 0);
   const wantQuantity = wants.reduce((total, card) => total + card.qty, 0);
   const homeStore = stores.find((store) => store.id === homeStoreId);
+  // Avoid showing the same connection error twice.
   const errors = [...new Set([binderError, storeError].filter(Boolean))] as string[];
   const isRefreshing = binderIsLoading || storesAreLoading;
 

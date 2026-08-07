@@ -53,9 +53,11 @@ export default function MatchScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+  // Track this without rendering so the same match is not announced twice.
   const notificationSent = useRef(false);
 
   useEffect(() => {
+    // Ignore requests that finish after leaving this screen.
     let isCancelled = false;
     setIsLoading(true);
     setErrorMessage(null);
@@ -63,6 +65,7 @@ export default function MatchScreen() {
 
     Promise.all([
       getTradePartner(params.partnerUid),
+      // A missing trade count should not block the binder match.
       getTradeParticipationCount(params.partnerUid).catch((error: unknown) => {
         console.warn('Partner trade count could not be loaded:', error);
         return null;
@@ -82,8 +85,6 @@ export default function MatchScreen() {
 
         const totalMatches =
           computedMatch.theyHaveForMe.length + computedMatch.iHaveForThem.length;
-        // DISCUSSION POINT: Effects may rerun as binder state changes. The ref prevents
-        // duplicate local notifications while this match screen remains mounted.
         if (totalMatches > 0 && !notificationSent.current) {
           notificationSent.current = true;
           const firstMatch = computedMatch.theyHaveForMe[0] ?? computedMatch.iHaveForThem[0];

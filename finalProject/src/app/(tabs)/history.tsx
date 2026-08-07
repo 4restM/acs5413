@@ -24,6 +24,7 @@ function formatLines(lines: TradeLine[]) {
 }
 
 function TradeHistoryCard({ trade, storeName }: { trade: TradeRecord; storeName?: string }) {
+  // Calculate the badge from the saved card lines so it cannot get out of sync.
   const givenQty = trade.given.reduce((total, card) => total + card.qty, 0);
   const receivedQty = trade.received.reduce((total, card) => total + card.qty, 0);
 

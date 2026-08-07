@@ -1,10 +1,5 @@
 import { StyleSheet, type TextStyle } from 'react-native';
 
-/**
- * Graphite neutrals with a single saturated accent. The accent is reserved for
- * interactive elements — active tabs, selected segments, primary buttons, links.
- * Everything else stays neutral so card art and mana colors carry the color.
- */
 export const colors = {
   background: '#0E0F12',
   surface: '#16181C',
@@ -48,18 +43,12 @@ export const typeScale = {
   display: 30,
 } as const;
 
-/**
- * Hierarchy comes from size and color first, weight second. Nothing goes above
- * semibold — heavy weights on every label are what make a list look shouted.
- */
 export const fontWeights = {
   regular: '400',
   medium: '500',
   semibold: '600',
 } as const satisfies Record<string, TextStyle['fontWeight']>;
 
-/** Rule between rows in a dense list. One physical pixel, never a full border. */
 export const hairline = StyleSheet.hairlineWidth;
 
-/** Keeps quantities and prices from shifting width as digits change. */
 export const tabularNumbers: TextStyle = { fontVariant: ['tabular-nums'] };

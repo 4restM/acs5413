@@ -8,8 +8,7 @@ export function isValidPartnerUid(value: string) {
 }
 
 function intersect(wants: BinderCard[], availableCards: BinderCard[]) {
-  // DISCUSSION POINT: A Map turns each direction of the comparison into linear-time
-  // key lookups, and the minimum quantity prevents suggesting more copies than exist.
+  // Index the available cards once instead of scanning the list for every want.
   const availableByKey = new Map(availableCards.map((card) => [card.cardKey, card]));
 
   return wants
@@ -19,6 +18,7 @@ function intersect(wants: BinderCard[], availableCards: BinderCard[]) {
 
       return [
         {
+          // Keep the owner's metadata because that is the copy being traded.
           card: availableCard,
           requestedQty: wantedCard.qty,
           availableQty: availableCard.qty,

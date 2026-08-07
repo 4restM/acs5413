@@ -29,24 +29,26 @@ export function parseCardList(input: string): ParseCardListResult {
       return;
     }
 
+    // No quantity means one copy.
     const qty = match[1] ? Number.parseInt(match[1], 10) : 1;
     let name = match[2].trim();
     const setCode = match[3]?.toUpperCase();
     let collectorNumber: string | undefined = match[4];
 
-    // The final regex group is only a collector number when a set code exists.
-    // Recombine it for plain multi-word lists such as "4 Lightning Bolt".
+    // Without a set code, the last match belongs to the card name.
     if (!setCode && collectorNumber) {
       name = `${name} ${collectorNumber}`;
       collectorNumber = undefined;
     }
 
+    // Skip anything that cannot become a valid Firebase key.
     const cardKey = normalizeCardName(name);
     if (!cardKey || !Number.isFinite(qty) || qty < 1) {
       skippedLines.push({ lineNumber, text: rawLine });
       return;
     }
 
+    // Merge duplicate cards and keep their original line numbers.
     const existing = cardsByKey.get(cardKey);
     if (existing) {
       existing.qty += qty;

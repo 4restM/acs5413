@@ -3,8 +3,7 @@ import type { SeedStore, Store, StoreRecord } from '@/types/store';
 export function storeRecordToList(record: Record<string, StoreRecord> | null): Store[] {
   if (!record) return [];
 
-  // DISCUSSION POINT: Firebase returns an object keyed by push ID, not an array.
-  // Object.entries preserves that key by moving it into each Store as its `id`.
+  // Keep Firebase's object key as the store ID.
   return Object.entries(record)
     .map(([id, store]) => ({ id, ...store }))
     .sort((left, right) => left.name.localeCompare(right.name));

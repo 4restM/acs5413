@@ -164,8 +164,7 @@ export async function getStores() {
 
 export async function seedStores(uid: string) {
   requireBackendUrl();
-  // DISCUSSION POINT: PATCHing stable keys makes first-run seeding idempotent even if two
-  // devices discover an empty database at nearly the same time.
+  // Stable keys keep two first-run devices from creating duplicate stores.
   const patch = createSeedStorePatch(SEED_STORES, uid);
   await rtdbClient.patch('/stores.json', patch);
   return storeRecordToList(patch);

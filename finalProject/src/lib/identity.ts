@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Crypto from 'expo-crypto';
 
+// AsyncStorage is flat, so prefix our keys.
 const UID_STORAGE_KEY = 'mtgtb:uid';
 const HANDLE_STORAGE_KEY = 'mtgtb:handle';
 const HOME_STORE_STORAGE_KEY = 'mtgtb:home-store';

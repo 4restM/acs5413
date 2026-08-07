@@ -104,6 +104,7 @@ export default function LogTradeScreen() {
   const [givenSelections, setGivenSelections] = useState<SelectionMap>({});
   const [receivedSelections, setReceivedSelections] = useState<SelectionMap>({});
   const [notes, setNotes] = useState('');
+  // Usually the binder should change with the trade, but the user can opt out.
   const [adjustBinder, setAdjustBinder] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -171,11 +172,13 @@ export default function LogTradeScreen() {
         }
       }
 
+      // Notify only after Firebase confirms the trade was saved.
       await sendLocalNotification({
         title: `Trade with @${partner.handle} recorded`,
         body: `${givenQty} out, ${receivedQty} in.`,
         data: { partnerUid: partner.uid, screen: 'history' },
       });
+      // Do not carry this store into the next trade.
       selectTradeStore(null);
 
       if (adjustmentFailed) {

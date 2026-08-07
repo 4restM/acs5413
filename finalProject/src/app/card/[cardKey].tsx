@@ -28,6 +28,7 @@ export default function CardDetailScreen() {
   const [isWorking, setIsWorking] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Missing cache data only removes the extra details; the binder card still works.
   useEffect(() => {
     if (!params.cardKey) return;
     getCachedCards([params.cardKey])
@@ -69,6 +70,7 @@ export default function CardDetailScreen() {
     ]);
   }
 
+  // The card may have been removed while this screen was still in the stack.
   if (!card) {
     return (
       <View style={styles.centered}>
@@ -77,6 +79,7 @@ export default function CardDetailScreen() {
     );
   }
 
+  // Use the cached full image when available, otherwise use the binder thumbnail.
   const imageUri = metadata?.imageNormal ?? card.imageSmall;
 
   return (

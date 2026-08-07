@@ -37,6 +37,7 @@ export function IdentityProvider({ children }: PropsWithChildren) {
   const [homeStoreId, setHomeStoreId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [bootstrapError, setBootstrapError] = useState<string | null>(null);
+  // Changing this key clears the child providers during a demo reset.
   const [sessionRevision, setSessionRevision] = useState(0);
 
   useEffect(() => {
@@ -86,7 +87,7 @@ export function IdentityProvider({ children }: PropsWithChildren) {
     setHandle(null);
     setHomeStoreId(null);
     setBootstrapError(null);
-    // Remount child providers so binder, trade, and selected-store memory is also clean.
+    // Remount the binder, trade, and store providers with the new UUID.
     setSessionRevision((revision) => revision + 1);
   }, []);
 

@@ -19,6 +19,7 @@ export const rtdbClient = create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Keep REST logs in Metro; they are useful when a Firebase write fails.
 rtdbClient.interceptors.request.use((config) => {
   console.log(`[RTDB] ${config.method?.toUpperCase()} ${config.url}`, config.data ?? '');
   return config;
