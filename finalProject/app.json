@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "MTG Trade Binder",
+    "slug": "finalProject",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "mtgtradebinder",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow MTG Trade Binder to scan another player's trade QR code."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Allow MTG Trade Binder to show nearby card shops."
+        }
+      ],
+      "expo-notifications"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -1,0 +1,21 @@
+# Dependencies and Expo output
+node_modules/
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+*.tsbuildinfo
+
+# Generated native projects (Expo Go workflow)
+android/
+ios/
+
+# Local tooling and operating-system files
+.DS_Store
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.env*.local
+
+# Reference MTGJSON dump. It is 600+ MB and is not the runtime card cache.
+AllPrintings.sqlite
