@@ -165,6 +165,15 @@ npm run seed:demo
 The seed command refuses to overwrite an existing demo account. Use
 `npm run seed:demo -- --force` only when you intentionally want to reset it.
 
+### Reset before recording
+
+Development builds show a **Recording tools** card at the bottom of Home. Choose
+**Reset recording state → Reset** to generate a fresh device UUID and return immediately to
+handle onboarding. The reset clears only the app's local UUID, handle, home-store selection, and
+in-memory contexts. It deliberately preserves Firebase records, permissions, the SQLite card
+cache, shared stores, and `@demo-trader-45`. The card is guarded by `__DEV__` and is omitted from
+production bundles.
+
 ## Demonstration walkthrough
 
 1. Launch the app, choose a handle, and show the stable device UUID on onboarding or the Trade tab.

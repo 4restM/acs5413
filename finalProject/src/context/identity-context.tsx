@@ -1,5 +1,6 @@
 import {
   createContext,
+  Fragment,
   PropsWithChildren,
   useCallback,
   useContext,
@@ -12,6 +13,7 @@ import { saveProfile, updateHomeStore } from '@/lib/api';
 import { getErrorMessage } from '@/lib/errors';
 import {
   loadOrCreateIdentity,
+  resetLocalIdentity,
   saveLocalHandle,
   saveLocalHomeStore,
 } from '@/lib/identity';
@@ -24,6 +26,7 @@ type IdentityContextValue = {
   bootstrapError: string | null;
   completeOnboarding: (handle: string) => Promise<void>;
   setHomeStore: (storeId: string) => Promise<void>;
+  resetRecordingState: () => Promise<void>;
 };
 
 const IdentityContext = createContext<IdentityContextValue | undefined>(undefined);
@@ -34,6 +37,7 @@ export function IdentityProvider({ children }: PropsWithChildren) {
   const [homeStoreId, setHomeStoreId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [bootstrapError, setBootstrapError] = useState<string | null>(null);
+  const [sessionRevision, setSessionRevision] = useState(0);
 
   useEffect(() => {
     loadOrCreateIdentity()
@@ -76,6 +80,16 @@ export function IdentityProvider({ children }: PropsWithChildren) {
     [uid]
   );
 
+  const resetRecordingState = useCallback(async () => {
+    const identity = await resetLocalIdentity();
+    setUid(identity.uid);
+    setHandle(null);
+    setHomeStoreId(null);
+    setBootstrapError(null);
+    // Remount child providers so binder, trade, and selected-store memory is also clean.
+    setSessionRevision((revision) => revision + 1);
+  }, []);
+
   const value = useMemo(
     () => ({
       uid,
@@ -85,6 +99,7 @@ export function IdentityProvider({ children }: PropsWithChildren) {
       bootstrapError,
       completeOnboarding,
       setHomeStore,
+      resetRecordingState,
     }),
     [
       bootstrapError,
@@ -92,12 +107,17 @@ export function IdentityProvider({ children }: PropsWithChildren) {
       handle,
       homeStoreId,
       isLoading,
+      resetRecordingState,
       setHomeStore,
       uid,
     ]
   );
 
-  return <IdentityContext.Provider value={value}>{children}</IdentityContext.Provider>;
+  return (
+    <IdentityContext.Provider value={value}>
+      <Fragment key={sessionRevision}>{children}</Fragment>
+    </IdentityContext.Provider>
+  );
 }
 
 export function useIdentity() {

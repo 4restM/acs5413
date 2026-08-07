@@ -1,7 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { useCallback } from 'react';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { InlineNotice } from '@/components/inline-notice';
@@ -13,7 +22,8 @@ import { useStores } from '@/context/store-context';
 import { useTrades } from '@/context/trade-context';
 
 export default function HomeScreen() {
-  const { handle, homeStoreId } = useIdentity();
+  const { handle, homeStoreId, resetRecordingState } = useIdentity();
+  const [isResetting, setIsResetting] = useState(false);
   const {
     haves,
     wants,
@@ -45,6 +55,32 @@ export default function HomeScreen() {
 
   function openImport(listKind: 'haves' | 'wants') {
     router.push({ pathname: '/import', params: { listKind } });
+  }
+
+  function confirmRecordingReset() {
+    Alert.alert(
+      'Reset local recording state?',
+      'This creates a new device UUID and returns to handle setup. Firebase records, permissions, and the card cache are not deleted.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: async () => {
+            setIsResetting(true);
+            try {
+              await resetRecordingState();
+            } catch (error: unknown) {
+              setIsResetting(false);
+              Alert.alert(
+                'Reset failed',
+                error instanceof Error ? error.message : 'The local identity could not be reset.'
+              );
+            }
+          },
+        },
+      ]
+    );
   }
 
   return (
@@ -148,6 +184,36 @@ export default function HomeScreen() {
           </View>
           <Ionicons color={colors.textMuted} name="chevron-forward" size={20} />
         </Pressable>
+
+        {__DEV__ ? (
+          <>
+            <Text style={styles.sectionTitle}>Recording tools</Text>
+            <View style={styles.developmentCard}>
+              <View style={styles.developmentText}>
+                <Text style={styles.developmentTitle}>Reset recording state</Text>
+                <Text style={styles.developmentDescription}>
+                  Create a fresh local UUID and return to handle setup without deleting Firebase.
+                </Text>
+              </View>
+              <Pressable
+                accessibilityRole="button"
+                disabled={isResetting}
+                onPress={confirmRecordingReset}
+                style={({ pressed }) => [
+                  styles.resetButton,
+                  (pressed || isResetting) && styles.resetButtonPressed,
+                ]}
+              >
+                {isResetting ? (
+                  <ActivityIndicator color={colors.danger} size="small" />
+                ) : (
+                  <Ionicons color={colors.danger} name="refresh" size={19} />
+                )}
+                <Text style={styles.resetButtonText}>Reset</Text>
+              </Pressable>
+            </View>
+          </>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -191,6 +257,31 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     paddingBottom: 48,
   },
+  developmentCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.danger,
+    borderRadius: radii.lg,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  developmentDescription: {
+    color: colors.textMuted,
+    fontSize: 12,
+    lineHeight: 18,
+    marginTop: spacing.xs,
+  },
+  developmentText: {
+    flex: 1,
+  },
+  developmentTitle: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '800',
+  },
   eyebrow: {
     color: colors.accent,
     fontSize: typeScale.caption,
@@ -219,6 +310,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '800',
     marginTop: spacing.xs,
+  },
+  resetButton: {
+    alignItems: 'center',
+    borderColor: colors.danger,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.xs,
+    minHeight: 42,
+    paddingHorizontal: spacing.md,
+  },
+  resetButtonPressed: {
+    opacity: 0.5,
+  },
+  resetButtonText: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: '800',
   },
   safeArea: {
     backgroundColor: colors.background,

@@ -40,3 +40,10 @@ export async function saveLocalHandle(handle: string) {
 export async function saveLocalHomeStore(homeStoreId: string) {
   await AsyncStorage.setItem(HOME_STORE_STORAGE_KEY, homeStoreId);
 }
+
+export async function resetLocalIdentity(): Promise<LocalIdentity> {
+  const uid = Crypto.randomUUID();
+  await AsyncStorage.multiRemove([HANDLE_STORAGE_KEY, HOME_STORE_STORAGE_KEY]);
+  await AsyncStorage.setItem(UID_STORAGE_KEY, uid);
+  return { uid, handle: null, homeStoreId: null };
+}
