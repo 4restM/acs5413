@@ -18,7 +18,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardRow } from '@/components/card-row';
 import { EmptyState } from '@/components/empty-state';
 import { InlineNotice } from '@/components/inline-notice';
-import { colors, radii, spacing, typeScale } from '@/constants/theme';
+import { colors, hairline, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import type { BinderCard, BinderListKind } from '@/types/card';
 
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   importButtonText: {
     color: colors.background,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   listContent: {
     paddingBottom: spacing.xl,
@@ -227,13 +227,16 @@ const styles = StyleSheet.create({
   segmentText: {
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   segmentTextActive: {
     color: colors.background,
   },
   separator: {
-    height: spacing.sm,
+    backgroundColor: colors.border,
+    height: hairline,
+    // Indented past the thumbnail so the rule aligns with the card name.
+    marginLeft: 46,
   },
   toolbar: {
     flexDirection: 'row',

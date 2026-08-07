@@ -101,9 +101,9 @@ export default function OnboardingScreen() {
 
 const styles = StyleSheet.create({
   atSign: {
-    color: colors.accent,
+    color: colors.textMuted,
     fontSize: typeScale.subtitle,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   button: {
     alignItems: 'center',
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.background,
     fontSize: typeScale.body,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   container: {
     flex: 1,
@@ -150,10 +150,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   eyebrow: {
-    color: colors.accent,
+    color: colors.textMuted,
     fontSize: typeScale.caption,
-    fontWeight: '800',
-    letterSpacing: 1.2,
+    fontWeight: '600',
+    letterSpacing: 0.4,
     marginBottom: spacing.sm,
   },
   formCard: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
     marginBottom: spacing.sm,
   },
   safeArea: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: typeScale.title,
-    fontWeight: '800',
+    fontWeight: '600',
     lineHeight: 34,
     marginBottom: spacing.md,
   },

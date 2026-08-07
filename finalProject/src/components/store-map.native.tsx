@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
   calloutHint: {
     color: '#8A6D08',
     fontSize: 11,
-    fontWeight: '700',
+    fontWeight: '500',
     marginTop: spacing.xs,
   },
   calloutTitle: {
     color: '#111318',
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   map: {
     flex: 1,

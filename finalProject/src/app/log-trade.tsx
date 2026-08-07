@@ -313,7 +313,7 @@ const styles = StyleSheet.create({
   adjustTitle: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     marginBottom: spacing.xs,
   },
   centered: {
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     marginBottom: -spacing.md,
   },
   mutedText: {
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: colors.background,
     fontSize: typeScale.body,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   section: {
     backgroundColor: colors.surface,
@@ -388,13 +388,13 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
     marginBottom: spacing.md,
   },
   selectedQty: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
     minWidth: 30,
     textAlign: 'center',
   },
@@ -440,21 +440,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   storeLabel: {
-    color: colors.accent,
+    color: colors.textMuted,
     fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 0.8,
+    fontWeight: '700',
+    letterSpacing: 0.3,
     marginBottom: spacing.xs,
   },
   storeName: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     marginBottom: spacing.xs,
   },
   title: {
     color: colors.text,
     fontSize: typeScale.title,
-    fontWeight: '800',
+    fontWeight: '600',
   },
 });

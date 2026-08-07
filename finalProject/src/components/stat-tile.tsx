@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 
-import { colors, radii, spacing, typeScale } from '@/constants/theme';
+import { colors, fontWeights, radii, spacing, tabularNumbers, typeScale } from '@/constants/theme';
 
 type StatTileProps = {
   accessibilityHint: string;
@@ -27,26 +27,23 @@ export function StatTile({ accessibilityHint, label, onPress, value }: StatTileP
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: radii.lg,
-    borderWidth: 1,
+    borderRadius: radii.md,
     flex: 1,
-    padding: spacing.lg,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
   },
   containerPressed: {
-    borderColor: colors.accent,
-    opacity: 0.8,
+    backgroundColor: colors.surfaceAlt,
   },
   label: {
     color: colors.textMuted,
-    fontSize: typeScale.caption,
-    fontWeight: '700',
-    marginTop: spacing.xs,
-    textTransform: 'uppercase',
+    fontSize: 13,
+    marginTop: 2,
   },
   value: {
-    color: colors.accentSoft,
+    ...tabularNumbers,
+    color: colors.text,
     fontSize: typeScale.title,
-    fontWeight: '800',
+    fontWeight: fontWeights.semibold,
   },
 });

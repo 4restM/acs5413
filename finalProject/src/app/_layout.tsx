@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   errorTitle: {
     color: colors.danger,
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   loadingText: {
     color: colors.textMuted,

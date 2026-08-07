@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   handle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   loadingText: {
     color: colors.textMuted,
@@ -245,12 +245,12 @@ const styles = StyleSheet.create({
   logButtonText: {
     color: colors.background,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   matchCount: {
-    color: colors.accentSoft,
+    color: colors.text,
     fontSize: 48,
-    fontWeight: '900',
+    fontWeight: '700',
     marginTop: spacing.sm,
   },
   matchLabel: {
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
   nextStepTitle: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   noMatches: {
     color: colors.textMuted,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   partnerTradeText: {
     color: colors.textMuted,
     fontSize: typeScale.caption,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   quantityNote: {
     color: colors.textMuted,
@@ -316,7 +316,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   summaryCard: {
     alignItems: 'center',

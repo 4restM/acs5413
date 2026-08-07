@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   actionTitle: {
     color: colors.text,
     fontSize: typeScale.body,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   container: {
     flexGrow: 1,
@@ -283,13 +283,13 @@ const styles = StyleSheet.create({
   developmentTitle: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   eyebrow: {
-    color: colors.accent,
+    color: colors.textMuted,
     fontSize: typeScale.caption,
-    fontWeight: '800',
-    letterSpacing: 1.2,
+    fontWeight: '600',
+    letterSpacing: 0.4,
     marginTop: spacing.sm,
   },
   homeStoreCard: {
@@ -305,13 +305,13 @@ const styles = StyleSheet.create({
   homeStoreLabel: {
     color: colors.textMuted,
     fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 0.8,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   homeStoreName: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     marginTop: spacing.xs,
   },
   resetButton: {
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   resetButtonText: {
     color: colors.danger,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   safeArea: {
     backgroundColor: colors.background,
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
     marginTop: spacing.sm,
   },
   statsRow: {
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: typeScale.display,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   uniqueCount: {
     color: colors.textMuted,

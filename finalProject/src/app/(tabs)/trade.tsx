@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
   fallbackTitle: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
     marginTop: spacing.lg,
   },
   findButton: {
@@ -204,12 +204,12 @@ const styles = StyleSheet.create({
   findButtonText: {
     color: colors.background,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   handle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
     marginTop: spacing.lg,
   },
   manualInput: {
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   permissionTitle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   qrCard: {
     backgroundColor: '#FFFFFF',
@@ -289,15 +289,15 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   storeBannerLabel: {
-    color: colors.accent,
+    color: colors.textMuted,
     fontSize: 10,
-    fontWeight: '900',
-    letterSpacing: 0.8,
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   storeBannerName: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     marginTop: 2,
   },
   storeBannerText: {
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   segmentText: {
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   segmentTextActive: {
     color: colors.background,

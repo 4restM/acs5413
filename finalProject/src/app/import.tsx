@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   commitButtonText: {
     color: colors.background,
     fontSize: typeScale.body,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   container: {
     backgroundColor: colors.background,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   previewTitle: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
     marginBottom: spacing.xs,
   },
   segment: {
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   segmentText: {
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   segmentTextActive: {
     color: colors.background,
@@ -321,6 +321,6 @@ const styles = StyleSheet.create({
   warningTitle: {
     color: colors.danger,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
 });

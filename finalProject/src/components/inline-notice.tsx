@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { colors, radii, spacing } from '@/constants/theme';
+import { colors, fontWeights, radii, spacing } from '@/constants/theme';
 
 type InlineNoticeProps = {
   title: string;
@@ -13,7 +13,7 @@ type InlineNoticeProps = {
 export function InlineNotice({ title, message, actionLabel, onAction }: InlineNoticeProps) {
   return (
     <View accessibilityRole="alert" style={styles.container}>
-      <Ionicons color={colors.danger} name="cloud-offline-outline" size={22} />
+      <Ionicons color={colors.danger} name="cloud-offline-outline" size={18} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.message}>{message}</Text>
@@ -33,35 +33,32 @@ export function InlineNotice({ title, message, actionLabel, onAction }: InlineNo
 
 const styles = StyleSheet.create({
   action: {
-    borderColor: colors.danger,
-    borderRadius: radii.sm,
-    borderWidth: 1,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xs,
+    paddingVertical: spacing.xs,
   },
   actionText: {
-    color: colors.danger,
-    fontSize: 12,
-    fontWeight: '800',
+    color: colors.accent,
+    fontSize: 13,
+    fontWeight: fontWeights.medium,
   },
   container: {
     alignItems: 'flex-start',
     backgroundColor: colors.surface,
-    borderColor: colors.danger,
-    borderRadius: radii.md,
-    borderWidth: 1,
+    borderLeftColor: colors.danger,
+    borderLeftWidth: 2,
+    borderRadius: radii.sm,
     flexDirection: 'row',
     gap: spacing.sm,
     padding: spacing.md,
   },
   message: {
     color: colors.textMuted,
-    fontSize: 12,
-    lineHeight: 17,
-    marginTop: spacing.xs,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: 2,
   },
   pressed: {
-    opacity: 0.6,
+    opacity: 0.5,
   },
   textContainer: {
     flex: 1,
@@ -69,6 +66,6 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: fontWeights.medium,
   },
 });

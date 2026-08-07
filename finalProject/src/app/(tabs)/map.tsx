@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   actionLabel: {
     color: colors.text,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   actionPill: {
     alignItems: 'center',
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: colors.background,
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   closeButton: {
     alignItems: 'center',
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.text,
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   pressed: {
     opacity: 0.65,
@@ -314,12 +314,12 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: colors.background,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   retryText: {
     color: colors.accent,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   safeArea: {
     backgroundColor: colors.background,
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: colors.accent,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   selectionActions: {
     flexDirection: 'row',
@@ -371,15 +371,15 @@ const styles = StyleSheet.create({
   selectionName: {
     color: colors.text,
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   selectionText: {
     flex: 1,
   },
   storeCount: {
-    color: colors.accent,
+    color: colors.text,
     fontSize: 18,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   storeCountCard: {
     alignItems: 'baseline',
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   storeCountLabel: {
     color: colors.textMuted,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   topActions: {
     flexDirection: 'row',

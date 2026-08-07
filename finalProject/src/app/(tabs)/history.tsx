@@ -161,8 +161,7 @@ const styles = StyleSheet.create({
   directionLabel: {
     color: colors.textMuted,
     fontSize: typeScale.caption,
-    fontWeight: '800',
-    textTransform: 'uppercase',
+    fontWeight: '600',
   },
   directionRow: {
     alignItems: 'flex-start',
@@ -200,12 +199,12 @@ const styles = StyleSheet.create({
   historyTotalLabel: {
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   historyTotalValue: {
-    color: colors.accentSoft,
+    color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   listContent: {
     padding: spacing.lg,
@@ -221,10 +220,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   locationText: {
-    color: colors.accentSoft,
+    color: colors.textMuted,
     flex: 1,
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '500',
   },
   notes: {
     backgroundColor: colors.surfaceAlt,
@@ -238,7 +237,7 @@ const styles = StyleSheet.create({
   partner: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   safeArea: {
     backgroundColor: colors.background,
@@ -254,9 +253,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
   },
   summaryText: {
-    color: colors.accentSoft,
+    color: colors.text,
     fontSize: typeScale.caption,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   tradeCard: {
     backgroundColor: colors.surface,

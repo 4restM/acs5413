@@ -240,10 +240,10 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   eyebrow: {
-    color: colors.accent,
+    color: colors.textMuted,
     fontSize: 12,
-    fontWeight: '900',
-    letterSpacing: 1.1,
+    fontWeight: '700',
+    letterSpacing: 0.4,
   },
   field: {
     gap: spacing.sm,
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.text,
     fontSize: 13,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   multilineInput: {
     minHeight: 76,
@@ -305,12 +305,12 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: colors.background,
     fontSize: 15,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   title: {
     color: colors.text,
     fontSize: typeScale.title,
-    fontWeight: '900',
+    fontWeight: '700',
     marginTop: spacing.xs,
   },
 });

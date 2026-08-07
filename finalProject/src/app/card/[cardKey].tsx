@@ -182,20 +182,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   manaCost: {
-    color: colors.accentSoft,
+    color: colors.textMuted,
     fontSize: typeScale.body,
     marginTop: spacing.sm,
   },
   metadata: {
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
     marginTop: spacing.xs,
   },
   name: {
     color: colors.text,
     fontSize: typeScale.title,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   price: {
     color: colors.success,
@@ -222,13 +222,13 @@ const styles = StyleSheet.create({
   quantityLabel: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '500',
     textTransform: 'capitalize',
   },
   quantityValue: {
     color: colors.text,
     fontSize: typeScale.subtitle,
-    fontWeight: '800',
+    fontWeight: '600',
     minWidth: 34,
     textAlign: 'center',
   },
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   removeText: {
     color: colors.danger,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
     textTransform: 'capitalize',
   },
   stepButton: {

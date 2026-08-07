@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   noticeTitle: {
     color: colors.text,
     fontSize: 14,
-    fontWeight: '800',
+    fontWeight: '600',
   },
   storeCard: {
     backgroundColor: colors.surface,
@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
   storeName: {
     color: colors.text,
     fontSize: 15,
-    fontWeight: '800',
+    fontWeight: '600',
   },
 });
