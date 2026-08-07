@@ -23,5 +23,12 @@ The first launch creates a device UUID in AsyncStorage and asks for a handle. Cr
 profile writes `/users/{uid}/profile` to Realtime Database. The UUID and handle remain on the
 device so future launches skip onboarding.
 
+## Card-data pipeline
+
+Card lists can use plain, Moxfield, Arena, or MTGO-style lines. The pipeline normalizes names
+into Firebase-safe keys, resolves metadata in batches through Scryfall, and stores results in a
+small on-device SQLite cache. Scryfall requests use batches of at most 75 cards and wait 500 ms
+between requests. Run the parser and normalization tests with `npm test`.
+
 `AllPrintings.sqlite` is a large local MTGJSON reference database. It is intentionally ignored
 because the planned app uses Scryfall for card data and `expo-sqlite` only for a compact cache.

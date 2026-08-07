@@ -1,10 +1,12 @@
 import { DarkTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '@/constants/theme';
 import { IdentityProvider, useIdentity } from '@/context/identity-context';
+import { initializeCardCache } from '@/lib/card-cache';
 
 const mtgNavigationTheme = {
   ...DarkTheme,
@@ -21,8 +23,19 @@ const mtgNavigationTheme = {
 
 function AppNavigator() {
   const { handle, isLoading, bootstrapError } = useIdentity();
+  const [cacheIsLoading, setCacheIsLoading] = useState(true);
+  const [cacheError, setCacheError] = useState<string | null>(null);
 
-  if (isLoading) {
+  useEffect(() => {
+    initializeCardCache()
+      .catch((error: unknown) => {
+        console.error('Card cache setup failed:', error);
+        setCacheError(error instanceof Error ? error.message : 'The card cache could not be opened.');
+      })
+      .finally(() => setCacheIsLoading(false));
+  }, []);
+
+  if (isLoading || cacheIsLoading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator color={colors.accent} size="large" />
@@ -31,11 +44,12 @@ function AppNavigator() {
     );
   }
 
-  if (bootstrapError) {
+  const startupError = bootstrapError || cacheError;
+  if (startupError) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Identity setup failed</Text>
-        <Text style={styles.errorMessage}>{bootstrapError}</Text>
+        <Text style={styles.errorTitle}>App setup failed</Text>
+        <Text style={styles.errorMessage}>{startupError}</Text>
       </View>
     );
   }
