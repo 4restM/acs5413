@@ -10,6 +10,7 @@ import {
 
 import { useIdentity } from '@/context/identity-context';
 import { createTrade, getTradeHistory } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import type { NewTrade, TradeRecord } from '@/types/trade';
 
 type TradeContextValue = {
@@ -21,10 +22,6 @@ type TradeContextValue = {
 };
 
 const TradeContext = createContext<TradeContextValue | undefined>(undefined);
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'Trade history could not be loaded.';
-}
 
 export function TradeProvider({ children }: PropsWithChildren) {
   const { uid, handle } = useIdentity();
@@ -39,7 +36,7 @@ export function TradeProvider({ children }: PropsWithChildren) {
     try {
       setTrades(await getTradeHistory(uid));
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'Trade history could not be loaded.'));
     } finally {
       setIsLoading(false);
     }

@@ -10,6 +10,7 @@ import {
 
 import { useIdentity } from '@/context/identity-context';
 import { addStore as addStoreRequest, getStores, seedStores } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import type { NewStore, Store } from '@/types/store';
 
 type StoreContextValue = {
@@ -23,10 +24,6 @@ type StoreContextValue = {
 };
 
 const StoreContext = createContext<StoreContextValue | undefined>(undefined);
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'Stores could not be loaded.';
-}
 
 export function StoreProvider({ children }: PropsWithChildren) {
   const { uid, handle } = useIdentity();
@@ -46,7 +43,7 @@ export function StoreProvider({ children }: PropsWithChildren) {
       }
       setStores(loadedStores);
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'Stores could not be loaded.'));
     } finally {
       setIsLoading(false);
     }

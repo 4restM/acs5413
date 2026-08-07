@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { saveProfile, updateHomeStore } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import {
   loadOrCreateIdentity,
   saveLocalHandle,
@@ -27,10 +28,6 @@ type IdentityContextValue = {
 
 const IdentityContext = createContext<IdentityContextValue | undefined>(undefined);
 
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'An unexpected error occurred.';
-}
-
 export function IdentityProvider({ children }: PropsWithChildren) {
   const [uid, setUid] = useState<string | null>(null);
   const [handle, setHandle] = useState<string | null>(null);
@@ -47,7 +44,7 @@ export function IdentityProvider({ children }: PropsWithChildren) {
       })
       .catch((error: unknown) => {
         console.error('Identity bootstrap failed:', error);
-        setBootstrapError(messageFromError(error));
+        setBootstrapError(getErrorMessage(error, 'An unexpected error occurred.'));
       })
       .finally(() => setIsLoading(false));
   }, []);

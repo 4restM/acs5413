@@ -15,11 +15,8 @@ import {
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import { getCachedCards } from '@/lib/card-cache';
+import { getErrorMessage } from '@/lib/errors';
 import type { BinderListKind, CardMetadata } from '@/types/card';
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'The card could not be updated.';
-}
 
 export default function CardDetailScreen() {
   const params = useLocalSearchParams<{ cardKey: string; listKind?: string }>();
@@ -45,7 +42,7 @@ export default function CardDetailScreen() {
     try {
       await setQuantity(listKind, card.cardKey, nextQuantity);
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'The card could not be updated.'));
     } finally {
       setIsWorking(false);
     }
@@ -64,7 +61,7 @@ export default function CardDetailScreen() {
             await removeCard(listKind, card.cardKey);
             router.back();
           } catch (error: unknown) {
-            setErrorMessage(messageFromError(error));
+            setErrorMessage(getErrorMessage(error, 'The card could not be removed.'));
             setIsWorking(false);
           }
         },
@@ -110,6 +107,8 @@ export default function CardDetailScreen() {
           </View>
           <View style={styles.stepper}>
             <Pressable
+              accessibilityLabel={`Decrease ${card.name} quantity`}
+              accessibilityRole="button"
               disabled={isWorking || card.qty <= 1}
               onPress={() => changeQuantity(card.qty - 1)}
               style={styles.stepButton}
@@ -122,6 +121,8 @@ export default function CardDetailScreen() {
               <Text style={styles.quantityValue}>{card.qty}</Text>
             )}
             <Pressable
+              accessibilityLabel={`Increase ${card.name} quantity`}
+              accessibilityRole="button"
               disabled={isWorking}
               onPress={() => changeQuantity(card.qty + 1)}
               style={styles.stepButton}
@@ -133,7 +134,12 @@ export default function CardDetailScreen() {
 
         {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
 
-        <Pressable disabled={isWorking} onPress={confirmRemove} style={styles.removeButton}>
+        <Pressable
+          accessibilityRole="button"
+          disabled={isWorking}
+          onPress={confirmRemove}
+          style={styles.removeButton}
+        >
           <Ionicons color={colors.danger} name="trash-outline" size={20} />
           <Text style={styles.removeText}>Remove from {listKind}</Text>
         </Pressable>

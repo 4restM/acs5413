@@ -172,3 +172,18 @@ test('flattens Firebase stores, builds idempotent seed keys, and validates coord
   assert.throws(() => parseStoreCoordinates('91', '-97.5'), /Latitude/);
   assert.throws(() => parseStoreCoordinates('35.6', '-181'), /Longitude/);
 });
+
+test('turns network failures into useful messages without hiding specific setup errors', async () => {
+  const { getErrorMessage } = await import('../src/lib/errors.ts');
+
+  assert.equal(
+    getErrorMessage(new Error('Network Error'), 'Fallback'),
+    'Could not reach the service. Check your internet connection and try again.'
+  );
+  assert.match(getErrorMessage(new Error('request timeout'), 'Fallback'), /too long/);
+  assert.equal(
+    getErrorMessage(new Error('Firebase is not configured.'), 'Fallback'),
+    'Firebase is not configured.'
+  );
+  assert.equal(getErrorMessage(null, 'Fallback'), 'Fallback');
+});

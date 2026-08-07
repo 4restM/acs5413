@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/empty-state';
+import { InlineNotice } from '@/components/inline-notice';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useStores } from '@/context/store-context';
 import { useTrades } from '@/context/trade-context';
@@ -89,6 +90,17 @@ export default function HistoryScreen() {
           data={trades}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           keyExtractor={(item) => item.id}
+          ListHeaderComponent={
+            errorMessage ? (
+              <InlineNotice
+                actionLabel="Retry"
+                message={errorMessage}
+                onAction={refresh}
+                title="Showing saved trade history"
+              />
+            ) : null
+          }
+          ListHeaderComponentStyle={errorMessage ? styles.listHeader : undefined}
           ListEmptyComponent={
             <EmptyState
               icon="time-outline"
@@ -162,6 +174,9 @@ const styles = StyleSheet.create({
   listContent: {
     padding: spacing.lg,
     paddingBottom: 48,
+  },
+  listHeader: {
+    marginBottom: spacing.md,
   },
   locationRow: {
     alignItems: 'center',

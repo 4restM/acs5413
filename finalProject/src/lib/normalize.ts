@@ -2,6 +2,7 @@ const COMBINING_MARKS = /[\u0300-\u036f]/g;
 const RTDB_ILLEGAL_KEY_CHARACTERS = /[.$#[\]\/]/g;
 
 /**
+ * DISCUSSION POINT:
  * Produces the single canonical key used by imports, Firebase, and both sides
  * of a trade match. Changing this function changes the app's matching rules.
  */

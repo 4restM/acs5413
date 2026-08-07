@@ -17,11 +17,8 @@ import {
 
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useStores } from '@/context/store-context';
+import { getErrorMessage } from '@/lib/errors';
 import { parseStoreCoordinates } from '@/lib/stores';
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'The store could not be saved.';
-}
 
 function FormField({
   label,
@@ -79,7 +76,7 @@ export default function AddStoreScreen() {
       setLatitude(location.coords.latitude.toFixed(6));
       setLongitude(location.coords.longitude.toFixed(6));
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'Your location could not be read.'));
     } finally {
       setIsLocating(false);
     }
@@ -108,7 +105,7 @@ export default function AddStoreScreen() {
       });
       router.back();
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'The store could not be saved.'));
       setIsSaving(false);
     }
   }

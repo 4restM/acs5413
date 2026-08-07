@@ -15,7 +15,7 @@ export function EmptyState({ icon, title, message }: EmptyStateProps) {
       <View style={styles.iconContainer}>
         <Ionicons color={colors.accent} name={icon} size={34} />
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <Text accessibilityRole="header" style={styles.title}>{title}</Text>
       <Text style={styles.message}>{message}</Text>
     </View>
   );

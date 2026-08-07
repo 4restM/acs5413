@@ -16,13 +16,10 @@ import { EmptyState } from '@/components/empty-state';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import { getTradePartner } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import { computeBidirectionalMatch } from '@/lib/match';
 import { sendLocalNotification } from '@/lib/notifications';
 import type { BidirectionalMatch, MatchItem, TradePartner } from '@/types/trade';
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'The partner binder could not be loaded.';
-}
 
 function MatchSection({ title, subtitle, items }: { title: string; subtitle: string; items: MatchItem[] }) {
   return (
@@ -76,6 +73,8 @@ export default function MatchScreen() {
 
         const totalMatches =
           computedMatch.theyHaveForMe.length + computedMatch.iHaveForThem.length;
+        // DISCUSSION POINT: Effects may rerun as binder state changes. The ref prevents
+        // duplicate local notifications while this match screen remains mounted.
         if (totalMatches > 0 && !notificationSent.current) {
           notificationSent.current = true;
           const firstMatch = computedMatch.theyHaveForMe[0] ?? computedMatch.iHaveForThem[0];
@@ -87,7 +86,9 @@ export default function MatchScreen() {
         }
       })
       .catch((error: unknown) => {
-        if (!isCancelled) setErrorMessage(messageFromError(error));
+        if (!isCancelled) {
+          setErrorMessage(getErrorMessage(error, 'The partner binder could not be loaded.'));
+        }
       })
       .finally(() => {
         if (!isCancelled) setIsLoading(false);

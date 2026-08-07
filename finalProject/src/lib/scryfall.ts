@@ -102,6 +102,8 @@ export async function resolveCardMetadata(
   let networkRequests = 0;
 
   const batches = chunk(misses, COLLECTION_LIMIT);
+  // DISCUSSION POINT: Scryfall accepts at most 75 identifiers per collection request.
+  // Batches run sequentially with 500 ms spacing to respect its published rate guidance.
   for (let index = 0; index < batches.length; index += 1) {
     if (index > 0) await wait(REQUEST_DELAY_MS);
 

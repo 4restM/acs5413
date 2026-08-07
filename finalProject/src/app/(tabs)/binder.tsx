@@ -6,6 +6,7 @@ import {
   Button,
   FlatList,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
@@ -15,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { CardRow } from '@/components/card-row';
 import { EmptyState } from '@/components/empty-state';
+import { InlineNotice } from '@/components/inline-notice';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import type { BinderCard, BinderListKind } from '@/types/card';
@@ -94,6 +96,17 @@ export default function BinderScreen() {
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             keyExtractor={(item) => item.cardKey}
             keyboardShouldPersistTaps="handled"
+            ListHeaderComponent={
+              errorMessage ? (
+                <InlineNotice
+                  actionLabel="Retry"
+                  message={errorMessage}
+                  onAction={refresh}
+                  title="Showing saved binder data"
+                />
+              ) : null
+            }
+            ListHeaderComponentStyle={errorMessage ? styles.listHeader : undefined}
             ListEmptyComponent={
               <EmptyState
                 icon={query ? 'search-outline' : 'albums-outline'}
@@ -103,6 +116,13 @@ export default function BinderScreen() {
                     : `Import cards into your ${listKind === 'haves' ? 'trade binder' : 'want list'}.`
                 }
                 title={query ? 'No matching cards' : `No ${listKind} yet`}
+              />
+            }
+            refreshControl={
+              <RefreshControl
+                onRefresh={refresh}
+                refreshing={isLoading}
+                tintColor={colors.accent}
               />
             }
             renderItem={({ item }) => <CardRow card={item} onPress={() => openCard(item)} />}
@@ -153,6 +173,9 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: spacing.xl,
+  },
+  listHeader: {
+    marginBottom: spacing.md,
   },
   safeArea: {
     backgroundColor: colors.background,

@@ -8,6 +8,8 @@ export function isValidPartnerUid(value: string) {
 }
 
 function intersect(wants: BinderCard[], availableCards: BinderCard[]) {
+  // DISCUSSION POINT: A Map turns each direction of the comparison into linear-time
+  // key lookups, and the minimum quantity prevents suggesting more copies than exist.
   const availableByKey = new Map(availableCards.map((card) => [card.cardKey, card]));
 
   return wants

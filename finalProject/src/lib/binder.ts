@@ -49,6 +49,8 @@ export function binderRecordToList(value: Record<string, BinderCardRecord> | nul
 }
 
 export function createBinderAdjustmentPatch(adjustments: BinderAdjustment[]) {
+  // DISCUSSION POINT: These slash-delimited keys form one atomic RTDB multi-path PATCH,
+  // updating quantities and deleting zero-quantity cards without separate requests.
   return adjustments.reduce<Record<string, number | null>>((patch, adjustment) => {
     const basePath = `${adjustment.listKind}/${adjustment.cardKey}`;
     if (adjustment.remainingQty > 0) patch[`${basePath}/qty`] = adjustment.remainingQty;

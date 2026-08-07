@@ -9,7 +9,7 @@ type StatTileProps = {
 
 export function StatTile({ label, value }: StatTileProps) {
   return (
-    <View style={styles.container}>
+    <View accessibilityLabel={`${label}: ${value}`} style={styles.container}>
       <Text style={styles.value}>{value}</Text>
       <Text style={styles.label}>{label}</Text>
     </View>

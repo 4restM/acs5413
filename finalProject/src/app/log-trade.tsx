@@ -20,6 +20,7 @@ import { useBinder } from '@/context/binder-context';
 import { useStores } from '@/context/store-context';
 import { useTrades } from '@/context/trade-context';
 import { getTradePartner } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import { computeBidirectionalMatch } from '@/lib/match';
 import { sendLocalNotification } from '@/lib/notifications';
 import type {
@@ -30,10 +31,6 @@ import type {
 } from '@/types/trade';
 
 type SelectionMap = Record<string, number>;
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'The trade could not be saved.';
-}
 
 function SelectionSection({
   title,
@@ -123,7 +120,9 @@ export default function LogTradeScreen() {
         );
       })
       .catch((error: unknown) => {
-        if (!isCancelled) setErrorMessage(messageFromError(error));
+        if (!isCancelled) {
+          setErrorMessage(getErrorMessage(error, 'The partner binder could not be loaded.'));
+        }
       })
       .finally(() => {
         if (!isCancelled) setIsLoading(false);
@@ -189,7 +188,7 @@ export default function LogTradeScreen() {
         router.replace('/history');
       }
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'The trade could not be saved.'));
       setIsSaving(false);
     }
   }

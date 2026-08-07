@@ -12,12 +12,14 @@ type CardRowProps = {
 export function CardRow({ card, onPress }: CardRowProps) {
   return (
     <Pressable
+      accessibilityLabel={`${card.name}, ${card.setCode}, quantity ${card.qty}`}
+      accessibilityRole={onPress ? 'button' : undefined}
       disabled={!onPress}
       onPress={onPress}
       style={({ pressed }) => [styles.container, pressed && styles.pressed]}
     >
       {card.imageSmall ? (
-        <Image source={{ uri: card.imageSmall }} style={styles.image} />
+        <Image accessibilityElementsHidden source={{ uri: card.imageSmall }} style={styles.image} />
       ) : (
         <View style={[styles.image, styles.imagePlaceholder]}>
           <Ionicons color={colors.textMuted} name="image-outline" size={24} />

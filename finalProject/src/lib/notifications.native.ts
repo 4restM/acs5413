@@ -5,7 +5,8 @@ import type { LocalNotificationInput } from '@/lib/notifications';
 
 const ANDROID_CHANNEL_ID = 'trade-feedback';
 
-// Foreground notifications are silent unless the app supplies a presentation handler.
+// DISCUSSION POINT: Foreground notifications are silent unless the app supplies a
+// presentation handler, so this explicitly enables banners, the list, and sound.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -40,6 +41,8 @@ export async function sendLocalNotification(input: LocalNotificationInput) {
     const permissions = await Notifications.getPermissionsAsync();
     if (permissions.status !== Notifications.PermissionStatus.GRANTED) return false;
 
+    // DISCUSSION POINT: Android immediate notifications target the high-importance channel;
+    // iOS uses a null trigger for the same immediate local-notification behavior.
     await Notifications.scheduleNotificationAsync({
       content: {
         title: input.title,

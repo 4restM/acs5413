@@ -9,12 +9,9 @@ import StoreMap from '@/components/store-map';
 import { colors, radii, spacing } from '@/constants/theme';
 import { useIdentity } from '@/context/identity-context';
 import { useStores } from '@/context/store-context';
+import { getErrorMessage } from '@/lib/errors';
 
 type LocationState = 'idle' | 'checking' | 'granted' | 'denied' | 'unavailable';
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'Your home store could not be saved.';
-}
 
 export default function MapScreen() {
   const { homeStoreId, setHomeStore } = useIdentity();
@@ -78,7 +75,7 @@ export default function MapScreen() {
     try {
       await setHomeStore(selectedStore.id);
     } catch (error: unknown) {
-      setActionError(messageFromError(error));
+      setActionError(getErrorMessage(error, 'Your home store could not be saved.'));
     } finally {
       setIsSavingHome(false);
     }

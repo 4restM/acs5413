@@ -17,6 +17,7 @@ import { CardRow } from '@/components/card-row';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import { buildBinderCards } from '@/lib/binder';
+import { getErrorMessage } from '@/lib/errors';
 import { parseCardList } from '@/lib/parse-list';
 import { resolveCardMetadata } from '@/lib/scryfall';
 import type { BinderCard, BinderListKind, CardListEntry } from '@/types/card';
@@ -28,10 +29,6 @@ type Preview = {
   cacheHits: number;
   networkRequests: number;
 };
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'The card list could not be processed.';
-}
 
 export default function ImportScreen() {
   const params = useLocalSearchParams<{ listKind?: string }>();
@@ -70,7 +67,7 @@ export default function ImportScreen() {
         networkRequests: resolved.networkRequests,
       });
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'The card list could not be processed.'));
     } finally {
       setIsResolving(false);
     }
@@ -85,7 +82,7 @@ export default function ImportScreen() {
       await importCards(listKind, preview.cards);
       router.back();
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'The cards could not be imported.'));
     } finally {
       setIsSaving(false);
     }

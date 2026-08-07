@@ -1,18 +1,47 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useCallback } from 'react';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { InlineNotice } from '@/components/inline-notice';
 import { StatTile } from '@/components/stat-tile';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import { useIdentity } from '@/context/identity-context';
+import { useStores } from '@/context/store-context';
+import { useTrades } from '@/context/trade-context';
 
 export default function HomeScreen() {
-  const { handle } = useIdentity();
-  const { haves, wants } = useBinder();
+  const { handle, homeStoreId } = useIdentity();
+  const {
+    haves,
+    wants,
+    isLoading: binderIsLoading,
+    errorMessage: binderError,
+    refresh: refreshBinder,
+  } = useBinder();
+  const {
+    trades,
+    isLoading: tradesAreLoading,
+    errorMessage: tradeError,
+    refresh: refreshTrades,
+  } = useTrades();
+  const {
+    stores,
+    isLoading: storesAreLoading,
+    errorMessage: storeError,
+    refresh: refreshStores,
+  } = useStores();
   const haveQuantity = haves.reduce((total, card) => total + card.qty, 0);
   const wantQuantity = wants.reduce((total, card) => total + card.qty, 0);
+  const homeStore = stores.find((store) => store.id === homeStoreId);
+  const errors = [...new Set([binderError, tradeError, storeError].filter(Boolean))] as string[];
+  const isRefreshing = binderIsLoading || tradesAreLoading || storesAreLoading;
+
+  const refreshAll = useCallback(async () => {
+    await Promise.all([refreshBinder(), refreshTrades(), refreshStores()]);
+  }, [refreshBinder, refreshStores, refreshTrades]);
 
   function openImport(listKind: 'haves' | 'wants') {
     router.push({ pathname: '/import', params: { listKind } });
@@ -20,23 +49,68 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            onRefresh={refreshAll}
+            refreshing={isRefreshing}
+            tintColor={colors.accent}
+          />
+        }
+      >
         <Text style={styles.eyebrow}>YOUR COLLECTION, READY TO TRADE</Text>
         <Text style={styles.title}>Hello, @{handle}</Text>
         <Text style={styles.subtitle}>
           Import your binder, compare want lists, and keep a record of every trade.
         </Text>
 
+        {errors.length > 0 ? (
+          <InlineNotice
+            actionLabel="Retry all"
+            message={errors.join(' ')}
+            onAction={refreshAll}
+            title="Some data may be out of date"
+          />
+        ) : null}
+
         <View style={styles.statsRow}>
           <StatTile label="Cards to trade" value={haveQuantity} />
           <StatTile label="Cards wanted" value={wantQuantity} />
+        </View>
+        <View style={styles.statsRow}>
+          <StatTile label="Trades logged" value={trades.length} />
+          <StatTile label="Shops mapped" value={stores.length} />
         </View>
         <Text style={styles.uniqueCount}>
           {haves.length} unique haves · {wants.length} unique wants
         </Text>
 
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/map')}
+          style={styles.homeStoreCard}
+        >
+          <Ionicons
+            color={homeStore ? colors.accent : colors.textMuted}
+            name={homeStore ? 'star' : 'star-outline'}
+            size={24}
+          />
+          <View style={styles.actionText}>
+            <Text style={styles.homeStoreLabel}>HOME STORE</Text>
+            <Text style={styles.homeStoreName}>
+              {homeStore?.name ?? 'Choose a home card shop'}
+            </Text>
+          </View>
+          <Ionicons color={colors.textMuted} name="chevron-forward" size={20} />
+        </Pressable>
+
         <Text style={styles.sectionTitle}>Quick actions</Text>
-        <Pressable onPress={() => openImport('haves')} style={styles.actionCard}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => openImport('haves')}
+          style={styles.actionCard}
+        >
           <View style={styles.actionIcon}>
             <Ionicons color={colors.accent} name="albums-outline" size={24} />
           </View>
@@ -46,7 +120,11 @@ export default function HomeScreen() {
           </View>
           <Ionicons color={colors.textMuted} name="chevron-forward" size={20} />
         </Pressable>
-        <Pressable onPress={() => openImport('wants')} style={styles.actionCard}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => openImport('wants')}
+          style={styles.actionCard}
+        >
           <View style={styles.actionIcon}>
             <Ionicons color={colors.accent} name="heart-outline" size={24} />
           </View>
@@ -56,7 +134,11 @@ export default function HomeScreen() {
           </View>
           <Ionicons color={colors.textMuted} name="chevron-forward" size={20} />
         </Pressable>
-        <Pressable onPress={() => router.push('/trade')} style={styles.actionCard}>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() => router.push('/trade')}
+          style={styles.actionCard}
+        >
           <View style={styles.actionIcon}>
             <Ionicons color={colors.accent} name="swap-horizontal" size={24} />
           </View>
@@ -115,6 +197,28 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     letterSpacing: 1.2,
     marginTop: spacing.sm,
+  },
+  homeStoreCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceAlt,
+    borderColor: colors.border,
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  homeStoreLabel: {
+    color: colors.textMuted,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+  },
+  homeStoreName: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '800',
+    marginTop: spacing.xs,
   },
   safeArea: {
     backgroundColor: colors.background,

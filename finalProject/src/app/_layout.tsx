@@ -10,6 +10,7 @@ import { IdentityProvider, useIdentity } from '@/context/identity-context';
 import { StoreProvider } from '@/context/store-context';
 import { TradeProvider } from '@/context/trade-context';
 import { initializeCardCache } from '@/lib/card-cache';
+import { getErrorMessage } from '@/lib/errors';
 import { configureNotifications } from '@/lib/notifications';
 
 const mtgNavigationTheme = {
@@ -34,7 +35,7 @@ function AppNavigator() {
     initializeCardCache()
       .catch((error: unknown) => {
         console.error('Card cache setup failed:', error);
-        setCacheError(error instanceof Error ? error.message : 'The card cache could not be opened.');
+        setCacheError(getErrorMessage(error, 'The card cache could not be opened.'));
       })
       .finally(() => setCacheIsLoading(false));
   }, []);

@@ -13,10 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useIdentity } from '@/context/identity-context';
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'Your profile could not be saved.';
-}
+import { getErrorMessage } from '@/lib/errors';
 
 export default function OnboardingScreen() {
   const { uid, completeOnboarding } = useIdentity();
@@ -35,7 +32,7 @@ export default function OnboardingScreen() {
     try {
       await completeOnboarding(trimmedHandle);
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'Your profile could not be saved.'));
     } finally {
       setIsSaving(false);
     }

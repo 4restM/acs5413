@@ -16,6 +16,7 @@ import {
   removeBinderCard,
   updateBinderQuantity,
 } from '@/lib/api';
+import { getErrorMessage } from '@/lib/errors';
 import type { BinderCard, BinderListKind } from '@/types/card';
 import type { BinderAdjustment, TradeSelection } from '@/types/trade';
 
@@ -35,10 +36,6 @@ type BinderContextValue = {
 };
 
 const BinderContext = createContext<BinderContextValue | undefined>(undefined);
-
-function messageFromError(error: unknown) {
-  return error instanceof Error ? error.message : 'Binder data could not be loaded.';
-}
 
 function mergeCards(current: BinderCard[], incoming: BinderCard[]) {
   const cardsByKey = new Map(current.map((card) => [card.cardKey, card]));
@@ -66,7 +63,7 @@ export function BinderProvider({ children }: PropsWithChildren) {
       setHaves(loadedHaves);
       setWants(loadedWants);
     } catch (error: unknown) {
-      setErrorMessage(messageFromError(error));
+      setErrorMessage(getErrorMessage(error, 'Binder data could not be loaded.'));
     } finally {
       setIsLoading(false);
     }
