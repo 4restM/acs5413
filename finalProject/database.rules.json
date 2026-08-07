@@ -1,0 +1,19 @@
+{
+  "rules": {
+    "users": {
+      ".read": true,
+      "$uid": {
+        ".write": true
+      }
+    },
+    "trades": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["loggedBy"]
+    },
+    "stores": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}

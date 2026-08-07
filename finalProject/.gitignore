@@ -16,6 +16,7 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 .env*.local
+.env
 
 # Reference MTGJSON dump. It is 600+ MB and is not the runtime card cache.
 AllPrintings.sqlite

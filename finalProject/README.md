@@ -12,5 +12,16 @@ npx expo start
 The Phase 1 scaffold provides five dark-themed tabs: Home, Binder, Trade, Stores, and History.
 See `PLAN.md` for the complete implementation roadmap.
 
+## Firebase setup
+
+1. Create a Firebase Realtime Database on the Spark plan.
+2. Copy `.env.example` to `.env.local` and replace the sample value with the database URL.
+3. Paste `database.rules.json` into the Realtime Database Rules tab and publish it.
+4. Restart Expo after changing the environment file.
+
+The first launch creates a device UUID in AsyncStorage and asks for a handle. Creating the
+profile writes `/users/{uid}/profile` to Realtime Database. The UUID and handle remain on the
+device so future launches skip onboarding.
+
 `AllPrintings.sqlite` is a large local MTGJSON reference database. It is intentionally ignored
 because the planned app uses Scryfall for card data and `expo-sqlite` only for a compact cache.
