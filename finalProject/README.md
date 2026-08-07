@@ -90,6 +90,81 @@ Deck
 For a bidirectional match, one identity needs at least one card in `haves` that appears in the
 other identity's `wants`, and vice versa.
 
+## Seeded demo trader
+
+Firebase contains a ready-to-scan test account with 45 unique cards, each at quantity one:
+
+- **Handle:** `@demo-trader-45`
+- **Device UUID:** `54130000-0000-4000-8000-000000000045`
+- **Binder:** 25 haves and 20 wants
+
+Scan this code from the app's **Trade → Scan** screen. Display the README on another screen so the
+phone camera can see it. On a simulator or the same physical device, paste the UUID into the manual
+partner field instead.
+
+<img src="assets/demo-trader-45-qr.png" alt="QR code for the demo-trader-45 UUID" width="320" />
+
+### Demo account cards
+
+| Haves (25) | Wants (20) |
+|---|---|
+| Lightning Bolt | Swords to Plowshares |
+| Counterspell | Llanowar Elves |
+| Sol Ring | Birds of Paradise |
+| Arcane Signet | Dockside Extortionist |
+| Command Tower | Cyclonic Rift |
+| Path to Exile | Demonic Tutor |
+| Beast Within | Vampiric Tutor |
+| Chaos Warp | Smothering Tithe |
+| Cultivate | Teferi's Protection |
+| Kodama's Reach | Jeska's Will |
+| Rhystic Study | Esper Sentinel |
+| Mystic Remora | Deflecting Swat |
+| Swiftfoot Boots | Fierce Guardianship |
+| Lightning Greaves | The Great Henge |
+| Reliquary Tower | Mana Drain |
+| Farseek | Toxic Deluge |
+| Nature's Lore | Austere Command |
+| Brainstorm | Farewell |
+| Ponder | Boseiju, Who Endures |
+| Dark Ritual | Otawara, Soaring City |
+| Sign in Blood | — |
+| Blasphemous Act | — |
+| Vandalblast | — |
+| Heroic Intervention | — |
+| Eternal Witness | — |
+
+### Guaranteed bidirectional match
+
+Import these cards into **your Wants** so the demo trader has cards for you:
+
+```text
+1 Lightning Bolt
+1 Counterspell
+1 Sol Ring
+```
+
+Import these cards into **your Haves** so you have cards the demo trader wants:
+
+```text
+1 Swords to Plowshares
+1 Llanowar Elves
+1 Birds of Paradise
+```
+
+Scanning the demo QR will then produce six possible matches: three in each direction. It also
+triggers the first local notification. Select at least one card on the log-trade screen and save
+to test Firebase trade persistence and the second notification.
+
+The account can be recreated from the documented lists and current Scryfall metadata with:
+
+```bash
+npm run seed:demo
+```
+
+The seed command refuses to overwrite an existing demo account. Use
+`npm run seed:demo -- --force` only when you intentionally want to reset it.
+
 ## Demonstration walkthrough
 
 1. Launch the app, choose a handle, and show the stable device UUID on onboarding or the Trade tab.
