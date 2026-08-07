@@ -30,5 +30,9 @@ into Firebase-safe keys, resolves metadata in batches through Scryfall, and stor
 small on-device SQLite cache. Scryfall requests use batches of at most 75 cards and wait 500 ms
 between requests. Run the parser and normalization tests with `npm test`.
 
+The Binder tab switches between haves and wants, searches locally, and opens cache-backed card
+details. The import modal previews resolved cards before sending one Firebase `PATCH`; quantity
+changes and removals are saved from the card-detail screen.
+
 `AllPrintings.sqlite` is a large local MTGJSON reference database. It is intentionally ignored
 because the planned app uses Scryfall for card data and `expo-sqlite` only for a compact cache.

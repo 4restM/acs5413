@@ -41,3 +41,45 @@ Sideboard:
   assert.equal(result.cards[1].collectorNumber, '50');
   assert.equal(result.cards[2].cardKey, 'delver-of-secrets');
 });
+
+test('builds an idempotent Firebase binder patch keyed by normalized card name', async () => {
+  const { buildBinderCards, createBinderPatch, binderRecordToList } = await import(
+    '../src/lib/binder.ts'
+  );
+  const entries = [
+    {
+      cardKey: 'lightning-bolt',
+      name: 'Lightning Bolt',
+      qty: 4,
+      sourceLines: [1],
+    },
+    {
+      cardKey: 'missing-card',
+      name: 'Missing Card',
+      qty: 1,
+      sourceLines: [2],
+    },
+  ];
+  const metadata = {
+    'lightning-bolt': {
+      cardKey: 'lightning-bolt',
+      scryfallId: 'scryfall-id',
+      name: 'Lightning Bolt',
+      setCode: 'M11',
+      collectorNumber: '149',
+      imageSmall: 'https://example.com/small.jpg',
+      imageNormal: 'https://example.com/normal.jpg',
+      manaCost: '{R}',
+      typeLine: 'Instant',
+      priceUsd: '1.25',
+    },
+  };
+
+  const cards = buildBinderCards(entries, metadata);
+  assert.equal(cards.length, 1);
+  const patch = createBinderPatch(cards);
+  assert.deepEqual(Object.keys(patch), ['lightning-bolt']);
+  assert.equal(patch['lightning-bolt'].qty, 4);
+  assert.equal('cardKey' in patch['lightning-bolt'], false);
+  assert.deepEqual(binderRecordToList(patch), cards);
+});

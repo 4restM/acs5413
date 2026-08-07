@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
 import { colors } from '@/constants/theme';
+import { BinderProvider } from '@/context/binder-context';
 import { IdentityProvider, useIdentity } from '@/context/identity-context';
 import { initializeCardCache } from '@/lib/card-cache';
 
@@ -61,6 +62,11 @@ function AppNavigator() {
       </Stack.Protected>
       <Stack.Protected guard={Boolean(handle)}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="import"
+          options={{ presentation: 'modal', title: 'Import cards' }}
+        />
+        <Stack.Screen name="card/[cardKey]" options={{ title: 'Card details' }} />
       </Stack.Protected>
     </Stack>
   );
@@ -70,7 +76,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={mtgNavigationTheme}>
       <IdentityProvider>
-        <AppNavigator />
+        <BinderProvider>
+          <AppNavigator />
+        </BinderProvider>
       </IdentityProvider>
       <StatusBar style="light" />
     </ThemeProvider>

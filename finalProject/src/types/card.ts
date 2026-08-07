@@ -19,3 +19,17 @@ export type CardListEntry = {
   collectorNumber?: string;
   sourceLines: number[];
 };
+
+export type BinderListKind = 'haves' | 'wants';
+
+export type BinderCardRecord = {
+  name: string;
+  qty: number;
+  setCode: string;
+  scryfallId: string;
+  imageSmall: string | null;
+};
+
+export type BinderCard = BinderCardRecord & {
+  cardKey: string;
+};
