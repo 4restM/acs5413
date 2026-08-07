@@ -4,6 +4,7 @@ import type {
   CardListEntry,
   CardMetadata,
 } from '@/types/card';
+import type { BinderAdjustment } from '@/types/trade';
 
 export function buildBinderCards(
   entries: CardListEntry[],
@@ -45,4 +46,13 @@ export function binderRecordToList(value: Record<string, BinderCardRecord> | nul
   return Object.entries(value)
     .map(([cardKey, card]) => ({ cardKey, ...card }))
     .sort((first, second) => first.name.localeCompare(second.name));
+}
+
+export function createBinderAdjustmentPatch(adjustments: BinderAdjustment[]) {
+  return adjustments.reduce<Record<string, number | null>>((patch, adjustment) => {
+    const basePath = `${adjustment.listKind}/${adjustment.cardKey}`;
+    if (adjustment.remainingQty > 0) patch[`${basePath}/qty`] = adjustment.remainingQty;
+    else patch[basePath] = null;
+    return patch;
+  }, {});
 }

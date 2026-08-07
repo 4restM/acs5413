@@ -7,6 +7,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { colors } from '@/constants/theme';
 import { BinderProvider } from '@/context/binder-context';
 import { IdentityProvider, useIdentity } from '@/context/identity-context';
+import { TradeProvider } from '@/context/trade-context';
 import { initializeCardCache } from '@/lib/card-cache';
 import { configureNotifications } from '@/lib/notifications';
 
@@ -75,6 +76,10 @@ function AppNavigator() {
         />
         <Stack.Screen name="card/[cardKey]" options={{ title: 'Card details' }} />
         <Stack.Screen name="match/[partnerUid]" options={{ title: 'Trade match' }} />
+        <Stack.Screen
+          name="log-trade"
+          options={{ presentation: 'modal', title: 'Log trade' }}
+        />
       </Stack.Protected>
     </Stack>
   );
@@ -85,7 +90,9 @@ export default function RootLayout() {
     <ThemeProvider value={mtgNavigationTheme}>
       <IdentityProvider>
         <BinderProvider>
-          <AppNavigator />
+          <TradeProvider>
+            <AppNavigator />
+          </TradeProvider>
         </BinderProvider>
       </IdentityProvider>
       <StatusBar style="light" />

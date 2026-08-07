@@ -1,9 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Button,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -154,8 +155,19 @@ export default function MatchScreen() {
           <View style={styles.nextStepCard}>
             <Text style={styles.nextStepTitle}>Ready to trade?</Text>
             <Text style={styles.nextStepText}>
-              Trade logging and binder adjustment are added in the next checkpoint.
+              Select the cards exchanged, add notes, and optionally adjust your binder.
             </Text>
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/log-trade',
+                  params: { partnerUid: partner.uid },
+                })
+              }
+              style={styles.logButton}
+            >
+              <Text style={styles.logButtonText}>Log this trade</Text>
+            </Pressable>
           </View>
         </>
       )}
@@ -196,6 +208,19 @@ const styles = StyleSheet.create({
   loadingText: {
     color: colors.textMuted,
     fontSize: typeScale.body,
+  },
+  logButton: {
+    alignItems: 'center',
+    backgroundColor: colors.accent,
+    borderRadius: radii.md,
+    justifyContent: 'center',
+    marginTop: spacing.lg,
+    minHeight: 48,
+  },
+  logButtonText: {
+    color: colors.background,
+    fontSize: 14,
+    fontWeight: '800',
   },
   matchCount: {
     color: colors.accentSoft,

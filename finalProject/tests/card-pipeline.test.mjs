@@ -111,3 +111,37 @@ test('computes card and quantity matches in both trade directions', async () => 
   assert.equal(isValidPartnerUid('550e8400-e29b-41d4-a716-446655440000'), true);
   assert.equal(isValidPartnerUid('not-a-uuid'), false);
 });
+
+test('builds multi-path binder adjustments and sorts trade history newest first', async () => {
+  const { createBinderAdjustmentPatch } = await import('../src/lib/binder.ts');
+  const { tradeRecordToList } = await import('../src/lib/trade.ts');
+
+  assert.deepEqual(
+    createBinderAdjustmentPatch([
+      { listKind: 'haves', cardKey: 'sol-ring', remainingQty: 2 },
+      { listKind: 'wants', cardKey: 'lightning-bolt', remainingQty: 0 },
+    ]),
+    {
+      'haves/sol-ring/qty': 2,
+      'wants/lightning-bolt': null,
+    }
+  );
+
+  const baseTrade = {
+    loggedBy: 'me',
+    loggedByHandle: 'mage',
+    partnerUid: 'partner',
+    partnerHandle: 'trader',
+    given: [],
+    received: [],
+    notes: '',
+  };
+  const history = tradeRecordToList({
+    older: { ...baseTrade, createdAt: '2026-01-01T00:00:00.000Z' },
+    newer: { ...baseTrade, createdAt: '2026-02-01T00:00:00.000Z' },
+  });
+  assert.deepEqual(
+    history.map((trade) => trade.id),
+    ['newer', 'older']
+  );
+});

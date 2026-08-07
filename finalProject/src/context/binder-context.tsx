@@ -10,12 +10,14 @@ import {
 
 import { useIdentity } from '@/context/identity-context';
 import {
+  applyBinderAdjustments,
   bulkImportBinder,
   getBinderList,
   removeBinderCard,
   updateBinderQuantity,
 } from '@/lib/api';
 import type { BinderCard, BinderListKind } from '@/types/card';
+import type { BinderAdjustment, TradeSelection } from '@/types/trade';
 
 type BinderContextValue = {
   haves: BinderCard[];
@@ -26,6 +28,10 @@ type BinderContextValue = {
   importCards: (listKind: BinderListKind, cards: BinderCard[]) => Promise<void>;
   setQuantity: (listKind: BinderListKind, cardKey: string, qty: number) => Promise<void>;
   removeCard: (listKind: BinderListKind, cardKey: string) => Promise<void>;
+  applyTradeSelections: (
+    given: TradeSelection[],
+    received: TradeSelection[]
+  ) => Promise<void>;
 };
 
 const BinderContext = createContext<BinderContextValue | undefined>(undefined);
@@ -105,6 +111,46 @@ export function BinderProvider({ children }: PropsWithChildren) {
     [uid]
   );
 
+  const applyTradeSelections = useCallback(
+    async (given: TradeSelection[], received: TradeSelection[]) => {
+      if (!uid) throw new Error('The device identity is not ready.');
+
+      const selections = [
+        ...given.map((selection) => ({ listKind: 'haves' as const, selection })),
+        ...received.map((selection) => ({ listKind: 'wants' as const, selection })),
+      ];
+      const adjustments: BinderAdjustment[] = selections.map(({ listKind, selection }) => {
+        const currentCards = listKind === 'haves' ? haves : wants;
+        const currentCard = currentCards.find((card) => card.cardKey === selection.cardKey);
+        if (!currentCard || selection.qty > currentCard.qty) {
+          throw new Error(`${selection.name} no longer has enough quantity to adjust.`);
+        }
+        return {
+          listKind,
+          cardKey: selection.cardKey,
+          remainingQty: currentCard.qty - selection.qty,
+        };
+      });
+
+      await applyBinderAdjustments(uid, adjustments);
+      const applyLocally = (cards: BinderCard[], listKind: BinderListKind) => {
+        const changes = new Map(
+          adjustments
+            .filter((adjustment) => adjustment.listKind === listKind)
+            .map((adjustment) => [adjustment.cardKey, adjustment.remainingQty])
+        );
+        return cards.flatMap((card) => {
+          const remainingQty = changes.get(card.cardKey);
+          if (remainingQty === undefined) return [card];
+          return remainingQty > 0 ? [{ ...card, qty: remainingQty }] : [];
+        });
+      };
+      setHaves((cards) => applyLocally(cards, 'haves'));
+      setWants((cards) => applyLocally(cards, 'wants'));
+    },
+    [haves, uid, wants]
+  );
+
   const value = useMemo(
     () => ({
       haves,
@@ -115,8 +161,19 @@ export function BinderProvider({ children }: PropsWithChildren) {
       importCards,
       setQuantity,
       removeCard,
+      applyTradeSelections,
     }),
-    [errorMessage, haves, importCards, isLoading, refresh, removeCard, setQuantity, wants]
+    [
+      applyTradeSelections,
+      errorMessage,
+      haves,
+      importCards,
+      isLoading,
+      refresh,
+      removeCard,
+      setQuantity,
+      wants,
+    ]
   );
 
   return <BinderContext.Provider value={value}>{children}</BinderContext.Provider>;

@@ -38,5 +38,10 @@ The Trade tab generates a small UUID-only QR code, scans QR codes with a guarded
 and includes a manual UUID field for simulator demos. A partner lookup compares both users' lists
 by normalized card key and sends an immediate local notification when matches are found.
 
+Matched cards can be selected by quantity and saved as a one-sided trade log. History is queried
+by `loggedBy`, sorted newest-first, and supports pull-to-refresh. An optional follow-up multi-path
+PATCH subtracts given cards from haves and received cards from wants; a second notification confirms
+the recorded quantities.
+
 `AllPrintings.sqlite` is a large local MTGJSON reference database. It is intentionally ignored
 because the planned app uses Scryfall for card data and `expo-sqlite` only for a compact cache.

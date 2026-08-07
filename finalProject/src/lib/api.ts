@@ -1,7 +1,17 @@
 import { requireBackendUrl, rtdbClient } from '@/lib/http';
-import { binderRecordToList, createBinderPatch } from '@/lib/binder';
+import {
+  binderRecordToList,
+  createBinderAdjustmentPatch,
+  createBinderPatch,
+} from '@/lib/binder';
+import { tradeRecordToList } from '@/lib/trade';
 import type { BinderCard, BinderCardRecord, BinderListKind } from '@/types/card';
-import type { TradePartner } from '@/types/trade';
+import type {
+  BinderAdjustment,
+  NewTrade,
+  TradePartner,
+  TradeRecord,
+} from '@/types/trade';
 
 export type UserProfile = {
   handle: string;
@@ -88,4 +98,44 @@ export async function getTradePartner(partnerUid: string): Promise<TradePartner>
     haves: binderRecordToList(response.data.haves ?? null),
     wants: binderRecordToList(response.data.wants ?? null),
   };
+}
+
+export async function createTrade(
+  uid: string,
+  handle: string,
+  trade: NewTrade
+): Promise<TradeRecord> {
+  requireBackendUrl();
+  const storedTrade: Omit<TradeRecord, 'id'> = {
+    ...trade,
+    loggedBy: uid,
+    loggedByHandle: handle,
+    createdAt: new Date().toISOString(),
+  };
+  const response = await rtdbClient.post<{ name?: string }>('/trades.json', storedTrade);
+  if (!response.data.name) throw new Error('Firebase did not return a trade ID.');
+  return { id: response.data.name, ...storedTrade };
+}
+
+export async function getTradeHistory(uid: string) {
+  requireBackendUrl();
+  const response = await rtdbClient.get<Record<string, Omit<TradeRecord, 'id'>> | null>(
+    '/trades.json',
+    {
+      params: {
+        orderBy: '"loggedBy"',
+        equalTo: JSON.stringify(uid),
+      },
+    }
+  );
+  return tradeRecordToList(response.data);
+}
+
+export async function applyBinderAdjustments(uid: string, adjustments: BinderAdjustment[]) {
+  if (adjustments.length === 0) return;
+  requireBackendUrl();
+  await rtdbClient.patch(
+    `/users/${encodeURIComponent(uid)}.json`,
+    createBinderAdjustmentPatch(adjustments)
+  );
 }
