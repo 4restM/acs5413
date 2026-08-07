@@ -8,6 +8,7 @@ import { colors } from '@/constants/theme';
 import { BinderProvider } from '@/context/binder-context';
 import { IdentityProvider, useIdentity } from '@/context/identity-context';
 import { initializeCardCache } from '@/lib/card-cache';
+import { configureNotifications } from '@/lib/notifications';
 
 const mtgNavigationTheme = {
   ...DarkTheme,
@@ -34,6 +35,12 @@ function AppNavigator() {
         setCacheError(error instanceof Error ? error.message : 'The card cache could not be opened.');
       })
       .finally(() => setCacheIsLoading(false));
+  }, []);
+
+  useEffect(() => {
+    configureNotifications().catch((error: unknown) => {
+      console.warn('Notification setup failed:', error);
+    });
   }, []);
 
   if (isLoading || cacheIsLoading) {
@@ -67,6 +74,7 @@ function AppNavigator() {
           options={{ presentation: 'modal', title: 'Import cards' }}
         />
         <Stack.Screen name="card/[cardKey]" options={{ title: 'Card details' }} />
+        <Stack.Screen name="match/[partnerUid]" options={{ title: 'Trade match' }} />
       </Stack.Protected>
     </Stack>
   );

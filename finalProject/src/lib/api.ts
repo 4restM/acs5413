@@ -1,6 +1,7 @@
 import { requireBackendUrl, rtdbClient } from '@/lib/http';
 import { binderRecordToList, createBinderPatch } from '@/lib/binder';
 import type { BinderCard, BinderCardRecord, BinderListKind } from '@/types/card';
+import type { TradePartner } from '@/types/trade';
 
 export type UserProfile = {
   handle: string;
@@ -63,4 +64,28 @@ export async function removeBinderCard(
   await rtdbClient.delete(
     `/users/${encodeURIComponent(uid)}/${listKind}/${encodeURIComponent(cardKey)}.json`
   );
+}
+
+type FirebaseUserNode = {
+  profile?: UserProfile;
+  haves?: Record<string, BinderCardRecord>;
+  wants?: Record<string, BinderCardRecord>;
+};
+
+export async function getTradePartner(partnerUid: string): Promise<TradePartner> {
+  requireBackendUrl();
+  const response = await rtdbClient.get<FirebaseUserNode | null>(
+    `/users/${encodeURIComponent(partnerUid)}.json`
+  );
+
+  if (!response.data?.profile?.handle) {
+    throw new Error('No trader profile was found for that device ID.');
+  }
+
+  return {
+    uid: partnerUid,
+    handle: response.data.profile.handle,
+    haves: binderRecordToList(response.data.haves ?? null),
+    wants: binderRecordToList(response.data.wants ?? null),
+  };
 }

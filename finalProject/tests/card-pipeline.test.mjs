@@ -83,3 +83,31 @@ test('builds an idempotent Firebase binder patch keyed by normalized card name',
   assert.equal('cardKey' in patch['lightning-bolt'], false);
   assert.deepEqual(binderRecordToList(patch), cards);
 });
+
+test('computes card and quantity matches in both trade directions', async () => {
+  const { computeBidirectionalMatch, isValidPartnerUid } = await import('../src/lib/match.ts');
+  const card = (cardKey, name, qty) => ({
+    cardKey,
+    name,
+    qty,
+    setCode: 'TST',
+    scryfallId: `${cardKey}-id`,
+    imageSmall: null,
+  });
+
+  const result = computeBidirectionalMatch(
+    [card('sol-ring', 'Sol Ring', 1), card('counterspell', 'Counterspell', 3)],
+    [card('lightning-bolt', 'Lightning Bolt', 4)],
+    [card('lightning-bolt', 'Lightning Bolt', 2)],
+    [card('counterspell', 'Counterspell', 1)]
+  );
+
+  assert.equal(result.theyHaveForMe.length, 1);
+  assert.equal(result.theyHaveForMe[0].matchQty, 2);
+  assert.equal(result.theyHaveForMe[0].requestedQty, 4);
+  assert.equal(result.iHaveForThem.length, 1);
+  assert.equal(result.iHaveForThem[0].card.name, 'Counterspell');
+  assert.equal(result.iHaveForThem[0].matchQty, 1);
+  assert.equal(isValidPartnerUid('550e8400-e29b-41d4-a716-446655440000'), true);
+  assert.equal(isValidPartnerUid('not-a-uuid'), false);
+});

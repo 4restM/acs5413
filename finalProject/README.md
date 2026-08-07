@@ -34,5 +34,9 @@ The Binder tab switches between haves and wants, searches locally, and opens cac
 details. The import modal previews resolved cards before sending one Firebase `PATCH`; quantity
 changes and removals are saved from the card-detail screen.
 
+The Trade tab generates a small UUID-only QR code, scans QR codes with a guarded camera callback,
+and includes a manual UUID field for simulator demos. A partner lookup compares both users' lists
+by normalized card key and sends an immediate local notification when matches are found.
+
 `AllPrintings.sqlite` is a large local MTGJSON reference database. It is intentionally ignored
 because the planned app uses Scryfall for card data and `expo-sqlite` only for a compact cache.
