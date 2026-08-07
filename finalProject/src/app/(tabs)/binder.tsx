@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Button,
@@ -22,10 +23,20 @@ import { useBinder } from '@/context/binder-context';
 import type { BinderCard, BinderListKind } from '@/types/card';
 
 export default function BinderScreen() {
+  const params = useLocalSearchParams<{ listKind?: string }>();
   const { haves, wants, isLoading, errorMessage, refresh } = useBinder();
-  const [listKind, setListKind] = useState<BinderListKind>('haves');
+  const requestedListKind: BinderListKind | null =
+    params.listKind === 'haves' || params.listKind === 'wants' ? params.listKind : null;
+  const [listKind, setListKind] = useState<BinderListKind>(requestedListKind ?? 'haves');
   const [query, setQuery] = useState('');
   const cards = listKind === 'haves' ? haves : wants;
+
+  useFocusEffect(
+    useCallback(() => {
+      if (requestedListKind) setListKind(requestedListKind);
+    }, [requestedListKind])
+  );
+
   const filteredCards = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     if (!normalizedQuery) return cards;

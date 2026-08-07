@@ -19,7 +19,6 @@ import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
 import { useIdentity } from '@/context/identity-context';
 import { useStores } from '@/context/store-context';
-import { useTrades } from '@/context/trade-context';
 
 export default function HomeScreen() {
   const { handle, homeStoreId, resetRecordingState } = useIdentity();
@@ -32,12 +31,6 @@ export default function HomeScreen() {
     refresh: refreshBinder,
   } = useBinder();
   const {
-    trades,
-    isLoading: tradesAreLoading,
-    errorMessage: tradeError,
-    refresh: refreshTrades,
-  } = useTrades();
-  const {
     stores,
     isLoading: storesAreLoading,
     errorMessage: storeError,
@@ -46,15 +39,19 @@ export default function HomeScreen() {
   const haveQuantity = haves.reduce((total, card) => total + card.qty, 0);
   const wantQuantity = wants.reduce((total, card) => total + card.qty, 0);
   const homeStore = stores.find((store) => store.id === homeStoreId);
-  const errors = [...new Set([binderError, tradeError, storeError].filter(Boolean))] as string[];
-  const isRefreshing = binderIsLoading || tradesAreLoading || storesAreLoading;
+  const errors = [...new Set([binderError, storeError].filter(Boolean))] as string[];
+  const isRefreshing = binderIsLoading || storesAreLoading;
 
   const refreshAll = useCallback(async () => {
-    await Promise.all([refreshBinder(), refreshTrades(), refreshStores()]);
-  }, [refreshBinder, refreshStores, refreshTrades]);
+    await Promise.all([refreshBinder(), refreshStores()]);
+  }, [refreshBinder, refreshStores]);
 
   function openImport(listKind: 'haves' | 'wants') {
     router.push({ pathname: '/import', params: { listKind } });
+  }
+
+  function openBinder(listKind: 'haves' | 'wants') {
+    router.push({ pathname: '/binder', params: { listKind } });
   }
 
   function confirmRecordingReset() {
@@ -95,7 +92,7 @@ export default function HomeScreen() {
           />
         }
       >
-        <Text style={styles.eyebrow}>YOUR COLLECTION, READY TO TRADE</Text>
+        <Text style={styles.eyebrow}>LOOKING FOR TRADE</Text>
         <Text style={styles.title}>Hello, @{handle}</Text>
         <Text style={styles.subtitle}>
           Import your binder, compare want lists, and keep a record of every trade.
@@ -111,12 +108,18 @@ export default function HomeScreen() {
         ) : null}
 
         <View style={styles.statsRow}>
-          <StatTile label="Cards to trade" value={haveQuantity} />
-          <StatTile label="Cards wanted" value={wantQuantity} />
-        </View>
-        <View style={styles.statsRow}>
-          <StatTile label="Trades logged" value={trades.length} />
-          <StatTile label="Shops mapped" value={stores.length} />
+          <StatTile
+            accessibilityHint="Opens the Haves list in Binder"
+            label="Cards to trade"
+            onPress={() => openBinder('haves')}
+            value={haveQuantity}
+          />
+          <StatTile
+            accessibilityHint="Opens the Wants list in Binder"
+            label="Cards wanted"
+            onPress={() => openBinder('wants')}
+            value={wantQuantity}
+          />
         </View>
         <Text style={styles.uniqueCount}>
           {haves.length} unique haves · {wants.length} unique wants

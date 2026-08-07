@@ -66,7 +66,12 @@ function AppNavigator() {
   }
 
   return (
-    <Stack screenOptions={{ contentStyle: { backgroundColor: colors.background } }}>
+    <Stack
+      screenOptions={{
+        contentStyle: { backgroundColor: colors.background },
+        headerBackButtonDisplayMode: 'minimal',
+      }}
+    >
       <Stack.Protected guard={!handle}>
         <Stack.Screen name="onboarding" options={{ headerShown: false }} />
       </Stack.Protected>

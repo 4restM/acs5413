@@ -15,7 +15,7 @@ import { CardRow } from '@/components/card-row';
 import { EmptyState } from '@/components/empty-state';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
-import { getTradePartner } from '@/lib/api';
+import { getTradeParticipationCount, getTradePartner } from '@/lib/api';
 import { getErrorMessage } from '@/lib/errors';
 import { computeBidirectionalMatch } from '@/lib/match';
 import { sendLocalNotification } from '@/lib/notifications';
@@ -49,6 +49,7 @@ export default function MatchScreen() {
   const { haves, wants } = useBinder();
   const [partner, setPartner] = useState<TradePartner | null>(null);
   const [match, setMatch] = useState<BidirectionalMatch | null>(null);
+  const [partnerTradeCount, setPartnerTradeCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -58,9 +59,16 @@ export default function MatchScreen() {
     let isCancelled = false;
     setIsLoading(true);
     setErrorMessage(null);
+    setPartnerTradeCount(null);
 
-    getTradePartner(params.partnerUid)
-      .then((loadedPartner) => {
+    Promise.all([
+      getTradePartner(params.partnerUid),
+      getTradeParticipationCount(params.partnerUid).catch((error: unknown) => {
+        console.warn('Partner trade count could not be loaded:', error);
+        return null;
+      }),
+    ])
+      .then(([loadedPartner, loadedTradeCount]) => {
         if (isCancelled) return;
         const computedMatch = computeBidirectionalMatch(
           haves,
@@ -70,6 +78,7 @@ export default function MatchScreen() {
         );
         setPartner(loadedPartner);
         setMatch(computedMatch);
+        setPartnerTradeCount(loadedTradeCount);
 
         const totalMatches =
           computedMatch.theyHaveForMe.length + computedMatch.iHaveForThem.length;
@@ -133,6 +142,21 @@ export default function MatchScreen() {
         <Text style={styles.handle}>@{partner.handle}</Text>
         <Text style={styles.matchCount}>{totalMatches}</Text>
         <Text style={styles.matchLabel}>possible card matches</Text>
+        <View
+          accessibilityLabel={
+            partnerTradeCount === null
+              ? 'Completed trade total unavailable'
+              : `${partnerTradeCount} completed ${partnerTradeCount === 1 ? 'trade' : 'trades'} recorded`
+          }
+          style={styles.partnerTradeSummary}
+        >
+          <Ionicons color={colors.accent} name="time-outline" size={17} />
+          <Text style={styles.partnerTradeText}>
+            {partnerTradeCount === null
+              ? 'Completed trade total unavailable'
+              : `${partnerTradeCount} completed ${partnerTradeCount === 1 ? 'trade' : 'trades'} recorded`}
+          </Text>
+        </View>
       </View>
 
       {totalMatches === 0 ? (
@@ -254,6 +278,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontStyle: 'italic',
     marginTop: spacing.md,
+  },
+  partnerTradeSummary: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceAlt,
+    borderRadius: radii.sm,
+    flexDirection: 'row',
+    gap: spacing.xs,
+    marginTop: spacing.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  partnerTradeText: {
+    color: colors.textMuted,
+    fontSize: typeScale.caption,
+    fontWeight: '700',
   },
   quantityNote: {
     color: colors.textMuted,

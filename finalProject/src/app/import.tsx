@@ -51,7 +51,7 @@ export default function ImportScreen() {
   async function parseAndResolve() {
     const parsed = parseCardList(listText);
     if (parsed.cards.length === 0) {
-      setErrorMessage('Paste at least one card line before parsing.');
+      setErrorMessage('Paste at least one card line before validating.');
       return;
     }
 
@@ -108,7 +108,7 @@ export default function ImportScreen() {
               style={[styles.segment, listKind === kind && styles.segmentActive]}
             >
               <Text style={[styles.segmentText, listKind === kind && styles.segmentTextActive]}>
-                {kind === 'haves' ? 'Trade binder' : 'Want list'}
+                {kind === 'haves' ? 'Haves' : 'Wants'}
               </Text>
             </Pressable>
           ))}
@@ -134,7 +134,7 @@ export default function ImportScreen() {
             color={colors.accent}
             disabled={isResolving || isSaving || !listText.trim()}
             onPress={parseAndResolve}
-            title={preview ? 'Parse again' : 'Parse list'}
+            title={preview ? 'Validate again' : 'Validate list'}
           />
         </View>
 
@@ -187,7 +187,7 @@ export default function ImportScreen() {
                 <ActivityIndicator color={colors.background} />
               ) : (
                 <Text style={styles.commitButtonText}>
-                  Import {preview.cards.length} into {listKind === 'haves' ? 'binder' : 'wants'}
+                  Import {preview.cards.length} into {listKind === 'haves' ? 'Haves' : 'Wants'}
                 </Text>
               )}
             </Pressable>

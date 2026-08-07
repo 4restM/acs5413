@@ -6,7 +6,7 @@ import {
 } from '@/lib/binder';
 import { SEED_STORES } from '@/constants/seed-stores';
 import { createSeedStorePatch, storeRecordToList } from '@/lib/stores';
-import { tradeRecordToList } from '@/lib/trade';
+import { countTradeParticipation, tradeRecordToList } from '@/lib/trade';
 import type { BinderCard, BinderCardRecord, BinderListKind } from '@/types/card';
 import type { NewStore, StoreRecord } from '@/types/store';
 import type {
@@ -137,6 +137,14 @@ export async function getTradeHistory(uid: string) {
     }
   );
   return tradeRecordToList(response.data);
+}
+
+export async function getTradeParticipationCount(uid: string) {
+  requireBackendUrl();
+  const response = await rtdbClient.get<Record<string, Omit<TradeRecord, 'id'>> | null>(
+    '/trades.json'
+  );
+  return countTradeParticipation(response.data, uid);
 }
 
 export async function applyBinderAdjustments(uid: string, adjustments: BinderAdjustment[]) {

@@ -100,10 +100,6 @@ export default function TradeScreen() {
 
         {mode === 'show' ? (
           <View style={styles.qrSection}>
-            <Text style={styles.title}>Let another player scan</Text>
-            <Text style={styles.description}>
-              This code contains only your device ID. Your binder stays in Firebase.
-            </Text>
             <View style={styles.qrCard}>
               {uid ? <QRCode backgroundColor="#FFFFFF" size={240} value={uid} /> : null}
             </View>
@@ -137,7 +133,7 @@ export default function TradeScreen() {
               </View>
             )}
 
-            <Text style={styles.fallbackTitle}>Simulator or camera fallback</Text>
+            <Text style={styles.fallbackTitle}>Camera fallback</Text>
             <View style={styles.manualRow}>
               <TextInput
                 autoCapitalize="none"
@@ -151,7 +147,7 @@ export default function TradeScreen() {
                 value={manualUid}
               />
               <Pressable onPress={() => openMatch(manualUid)} style={styles.findButton}>
-                <Text style={styles.findButtonText}>Match</Text>
+                <Text style={styles.findButtonText}>Find</Text>
               </Pressable>
             </View>
           </View>
@@ -184,12 +180,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: spacing.lg,
-  },
-  description: {
-    color: colors.textMuted,
-    fontSize: 14,
-    lineHeight: 21,
-    textAlign: 'center',
   },
   errorText: {
     color: colors.danger,
@@ -261,13 +251,12 @@ const styles = StyleSheet.create({
   qrCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: radii.lg,
-    marginTop: spacing.xl,
     padding: spacing.lg,
   },
   qrSection: {
     alignItems: 'center',
     flex: 1,
-    paddingTop: spacing.xl,
+    justifyContent: 'center',
   },
   safeArea: {
     backgroundColor: colors.background,
@@ -336,13 +325,6 @@ const styles = StyleSheet.create({
   },
   segmentTextActive: {
     color: colors.background,
-  },
-  title: {
-    color: colors.text,
-    fontSize: typeScale.title,
-    fontWeight: '800',
-    marginBottom: spacing.sm,
-    textAlign: 'center',
   },
   uuid: {
     color: colors.textMuted,

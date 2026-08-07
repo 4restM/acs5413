@@ -91,16 +91,28 @@ export default function HistoryScreen() {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           keyExtractor={(item) => item.id}
           ListHeaderComponent={
-            errorMessage ? (
-              <InlineNotice
-                actionLabel="Retry"
-                message={errorMessage}
-                onAction={refresh}
-                title="Showing saved trade history"
-              />
-            ) : null
+            <View style={styles.headerContent}>
+              <View
+                accessibilityLabel={`${trades.length} ${trades.length === 1 ? 'trade' : 'trades'} logged`}
+                style={styles.historyTotal}
+              >
+                <Ionicons color={colors.accent} name="swap-horizontal" size={24} />
+                <Text style={styles.historyTotalValue}>{trades.length}</Text>
+                <Text style={styles.historyTotalLabel}>
+                  {trades.length === 1 ? 'trade logged' : 'trades logged'}
+                </Text>
+              </View>
+              {errorMessage ? (
+                <InlineNotice
+                  actionLabel="Retry"
+                  message={errorMessage}
+                  onAction={refresh}
+                  title="Showing saved trade history"
+                />
+              ) : null}
+            </View>
           }
-          ListHeaderComponentStyle={errorMessage ? styles.listHeader : undefined}
+          ListHeaderComponentStyle={styles.listHeader}
           ListEmptyComponent={
             <EmptyState
               icon="time-outline"
@@ -170,6 +182,30 @@ const styles = StyleSheet.create({
     fontSize: typeScale.body,
     lineHeight: 23,
     textAlign: 'center',
+  },
+  headerContent: {
+    gap: spacing.md,
+  },
+  historyTotal: {
+    alignItems: 'center',
+    backgroundColor: colors.surfaceAlt,
+    borderColor: colors.border,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+  },
+  historyTotalLabel: {
+    color: colors.textMuted,
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  historyTotalValue: {
+    color: colors.accentSoft,
+    fontSize: typeScale.subtitle,
+    fontWeight: '900',
   },
   listContent: {
     padding: spacing.lg,

@@ -112,9 +112,9 @@ test('computes card and quantity matches in both trade directions', async () => 
   assert.equal(isValidPartnerUid('not-a-uuid'), false);
 });
 
-test('builds multi-path binder adjustments and sorts trade history newest first', async () => {
+test('builds binder adjustments, sorts history, and counts both trade participants', async () => {
   const { createBinderAdjustmentPatch } = await import('../src/lib/binder.ts');
-  const { tradeRecordToList } = await import('../src/lib/trade.ts');
+  const { countTradeParticipation, tradeRecordToList } = await import('../src/lib/trade.ts');
 
   assert.deepEqual(
     createBinderAdjustmentPatch([
@@ -144,6 +144,24 @@ test('builds multi-path binder adjustments and sorts trade history newest first'
     history.map((trade) => trade.id),
     ['newer', 'older']
   );
+
+  const participation = {
+    loggedByMe: { ...baseTrade, createdAt: '2026-03-01T00:00:00.000Z' },
+    loggedByPartner: {
+      ...baseTrade,
+      loggedBy: 'partner',
+      partnerUid: 'me',
+      createdAt: '2026-04-01T00:00:00.000Z',
+    },
+    unrelated: {
+      ...baseTrade,
+      loggedBy: 'someone-else',
+      partnerUid: 'another-trader',
+      createdAt: '2026-05-01T00:00:00.000Z',
+    },
+  };
+  assert.equal(countTradeParticipation(participation, 'me'), 2);
+  assert.equal(countTradeParticipation(participation, 'partner'), 2);
 });
 
 test('flattens Firebase stores, builds idempotent seed keys, and validates coordinates', async () => {
