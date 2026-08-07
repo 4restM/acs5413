@@ -17,6 +17,7 @@ import {
 import { CardRow } from '@/components/card-row';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useBinder } from '@/context/binder-context';
+import { useStores } from '@/context/store-context';
 import { useTrades } from '@/context/trade-context';
 import { getTradePartner } from '@/lib/api';
 import { computeBidirectionalMatch } from '@/lib/match';
@@ -99,6 +100,7 @@ function selectionsToCards(items: MatchItem[], selections: SelectionMap): TradeS
 export default function LogTradeScreen() {
   const params = useLocalSearchParams<{ partnerUid: string }>();
   const { haves, wants, applyTradeSelections } = useBinder();
+  const { selectedTradeStore, selectTradeStore } = useStores();
   const { recordTrade } = useTrades();
   const [partner, setPartner] = useState<TradePartner | null>(null);
   const [match, setMatch] = useState<BidirectionalMatch | null>(null);
@@ -156,6 +158,7 @@ export default function LogTradeScreen() {
         partnerHandle: partner.handle,
         given: given.map(({ name, qty }) => ({ name, qty })),
         received: received.map(({ name, qty }) => ({ name, qty })),
+        storeId: selectedTradeStore?.id,
         notes: notes.trim(),
       });
 
@@ -174,6 +177,7 @@ export default function LogTradeScreen() {
         body: `${givenQty} out, ${receivedQty} in.`,
         data: { partnerUid: partner.uid, screen: 'history' },
       });
+      selectTradeStore(null);
 
       if (adjustmentFailed) {
         Alert.alert(
@@ -231,6 +235,17 @@ export default function LogTradeScreen() {
         selections={receivedSelections}
         title="You receive"
       />
+
+      {selectedTradeStore ? (
+        <View style={styles.storeCard}>
+          <Ionicons color={colors.accent} name="location" size={22} />
+          <View style={styles.storeCardText}>
+            <Text style={styles.storeLabel}>TRADE LOCATION</Text>
+            <Text style={styles.storeName}>{selectedTradeStore.name}</Text>
+            <Text style={styles.mutedText}>{selectedTradeStore.address}</Text>
+          </View>
+        </View>
+      ) : null}
 
       <Text style={styles.label}>Notes</Text>
       <TextInput
@@ -411,6 +426,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     gap: spacing.sm,
+  },
+  storeCard: {
+    alignItems: 'flex-start',
+    backgroundColor: colors.surface,
+    borderColor: colors.accent,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.md,
+    padding: spacing.lg,
+  },
+  storeCardText: {
+    flex: 1,
+  },
+  storeLabel: {
+    color: colors.accent,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+    marginBottom: spacing.xs,
+  },
+  storeName: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '800',
+    marginBottom: spacing.xs,
   },
   title: {
     color: colors.text,

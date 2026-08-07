@@ -16,12 +16,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
 import { useIdentity } from '@/context/identity-context';
+import { useStores } from '@/context/store-context';
 import { isValidPartnerUid } from '@/lib/match';
 
 type TradeMode = 'show' | 'scan';
 
 export default function TradeScreen() {
   const { uid, handle } = useIdentity();
+  const { selectedTradeStore, selectTradeStore } = useStores();
   const [mode, setMode] = useState<TradeMode>('show');
   const [permission, requestPermission] = useCameraPermissions();
   const [manualUid, setManualUid] = useState('');
@@ -76,6 +78,25 @@ export default function TradeScreen() {
             </Pressable>
           ))}
         </View>
+
+        {selectedTradeStore ? (
+          <View style={styles.storeBanner}>
+            <Ionicons color={colors.accent} name="location" size={20} />
+            <View style={styles.storeBannerText}>
+              <Text style={styles.storeBannerLabel}>TRADING AT</Text>
+              <Text numberOfLines={1} style={styles.storeBannerName}>
+                {selectedTradeStore.name}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityLabel="Clear trade location"
+              onPress={() => selectTradeStore(null)}
+              style={styles.clearStoreButton}
+            >
+              <Ionicons color={colors.textMuted} name="close" size={20} />
+            </Pressable>
+          </View>
+        ) : null}
 
         {mode === 'show' ? (
           <View style={styles.qrSection}>
@@ -153,6 +174,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     overflow: 'hidden',
     width: '100%',
+  },
+  clearStoreButton: {
+    alignItems: 'center',
+    height: 36,
+    justifyContent: 'center',
+    width: 36,
   },
   container: {
     flex: 1,
@@ -260,6 +287,32 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingTop: spacing.lg,
+  },
+  storeBanner: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderColor: colors.accent,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    padding: spacing.md,
+  },
+  storeBannerLabel: {
+    color: colors.accent,
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.8,
+  },
+  storeBannerName: {
+    color: colors.text,
+    fontSize: 14,
+    fontWeight: '800',
+    marginTop: 2,
+  },
+  storeBannerText: {
+    flex: 1,
   },
   segment: {
     alignItems: 'center',

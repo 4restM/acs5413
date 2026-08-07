@@ -4,8 +4,11 @@ import {
   createBinderAdjustmentPatch,
   createBinderPatch,
 } from '@/lib/binder';
+import { SEED_STORES } from '@/constants/seed-stores';
+import { createSeedStorePatch, storeRecordToList } from '@/lib/stores';
 import { tradeRecordToList } from '@/lib/trade';
 import type { BinderCard, BinderCardRecord, BinderListKind } from '@/types/card';
+import type { NewStore, StoreRecord } from '@/types/store';
 import type {
   BinderAdjustment,
   NewTrade,
@@ -30,6 +33,11 @@ export async function getProfile(uid: string) {
     `/users/${encodeURIComponent(uid)}/profile.json`
   );
   return response.data;
+}
+
+export async function updateHomeStore(uid: string, homeStoreId: string) {
+  requireBackendUrl();
+  await rtdbClient.patch(`/users/${encodeURIComponent(uid)}/profile.json`, { homeStoreId });
 }
 
 export async function getBinderList(uid: string, listKind: BinderListKind) {
@@ -138,4 +146,31 @@ export async function applyBinderAdjustments(uid: string, adjustments: BinderAdj
     `/users/${encodeURIComponent(uid)}.json`,
     createBinderAdjustmentPatch(adjustments)
   );
+}
+
+export async function getStores() {
+  requireBackendUrl();
+  const response = await rtdbClient.get<Record<string, StoreRecord> | null>('/stores.json');
+  return storeRecordToList(response.data);
+}
+
+export async function seedStores(uid: string) {
+  requireBackendUrl();
+  // DISCUSSION POINT: PATCHing stable keys makes first-run seeding idempotent even if two
+  // devices discover an empty database at nearly the same time.
+  const patch = createSeedStorePatch(SEED_STORES, uid);
+  await rtdbClient.patch('/stores.json', patch);
+  return storeRecordToList(patch);
+}
+
+export async function addStore(uid: string, store: NewStore) {
+  requireBackendUrl();
+  const storedStore: StoreRecord = {
+    ...store,
+    addedBy: uid,
+    createdAt: new Date().toISOString(),
+  };
+  const response = await rtdbClient.post<{ name?: string }>('/stores.json', storedStore);
+  if (!response.data.name) throw new Error('Firebase did not return a store ID.');
+  return { id: response.data.name, ...storedStore };
 }

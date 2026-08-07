@@ -145,3 +145,30 @@ test('builds multi-path binder adjustments and sorts trade history newest first'
     ['newer', 'older']
   );
 });
+
+test('flattens Firebase stores, builds idempotent seed keys, and validates coordinates', async () => {
+  const { createSeedStorePatch, parseStoreCoordinates, storeRecordToList } = await import(
+    '../src/lib/stores.ts'
+  );
+  const createdAt = '2026-08-07T12:00:00.000Z';
+  const seed = {
+    id: 'local-shop',
+    name: 'Local Shop',
+    address: '123 Main St',
+    lat: 35.6,
+    lng: -97.5,
+  };
+
+  const patch = createSeedStorePatch([seed], 'device-id', createdAt);
+  assert.deepEqual(Object.keys(patch), ['local-shop']);
+  assert.equal(patch['local-shop'].addedBy, 'device-id');
+  assert.equal(patch['local-shop'].createdAt, createdAt);
+  assert.deepEqual(storeRecordToList(patch), [{ id: 'local-shop', ...patch['local-shop'] }]);
+
+  assert.deepEqual(parseStoreCoordinates('35.653664', '-97.481560'), {
+    lat: 35.653664,
+    lng: -97.48156,
+  });
+  assert.throws(() => parseStoreCoordinates('91', '-97.5'), /Latitude/);
+  assert.throws(() => parseStoreCoordinates('35.6', '-181'), /Longitude/);
+});

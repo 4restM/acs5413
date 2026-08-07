@@ -8,15 +8,21 @@ import {
   useState,
 } from 'react';
 
-import { saveProfile } from '@/lib/api';
-import { loadOrCreateIdentity, saveLocalHandle } from '@/lib/identity';
+import { saveProfile, updateHomeStore } from '@/lib/api';
+import {
+  loadOrCreateIdentity,
+  saveLocalHandle,
+  saveLocalHomeStore,
+} from '@/lib/identity';
 
 type IdentityContextValue = {
   uid: string | null;
   handle: string | null;
+  homeStoreId: string | null;
   isLoading: boolean;
   bootstrapError: string | null;
   completeOnboarding: (handle: string) => Promise<void>;
+  setHomeStore: (storeId: string) => Promise<void>;
 };
 
 const IdentityContext = createContext<IdentityContextValue | undefined>(undefined);
@@ -28,6 +34,7 @@ function messageFromError(error: unknown) {
 export function IdentityProvider({ children }: PropsWithChildren) {
   const [uid, setUid] = useState<string | null>(null);
   const [handle, setHandle] = useState<string | null>(null);
+  const [homeStoreId, setHomeStoreId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [bootstrapError, setBootstrapError] = useState<string | null>(null);
 
@@ -36,6 +43,7 @@ export function IdentityProvider({ children }: PropsWithChildren) {
       .then((identity) => {
         setUid(identity.uid);
         setHandle(identity.handle);
+        setHomeStoreId(identity.homeStoreId);
       })
       .catch((error: unknown) => {
         console.error('Identity bootstrap failed:', error);
@@ -61,9 +69,35 @@ export function IdentityProvider({ children }: PropsWithChildren) {
     [uid]
   );
 
+  const setHomeStore = useCallback(
+    async (storeId: string) => {
+      if (!uid) throw new Error('The device identity is not ready.');
+      await updateHomeStore(uid, storeId);
+      await saveLocalHomeStore(storeId);
+      setHomeStoreId(storeId);
+    },
+    [uid]
+  );
+
   const value = useMemo(
-    () => ({ uid, handle, isLoading, bootstrapError, completeOnboarding }),
-    [bootstrapError, completeOnboarding, handle, isLoading, uid]
+    () => ({
+      uid,
+      handle,
+      homeStoreId,
+      isLoading,
+      bootstrapError,
+      completeOnboarding,
+      setHomeStore,
+    }),
+    [
+      bootstrapError,
+      completeOnboarding,
+      handle,
+      homeStoreId,
+      isLoading,
+      setHomeStore,
+      uid,
+    ]
   );
 
   return <IdentityContext.Provider value={value}>{children}</IdentityContext.Provider>;

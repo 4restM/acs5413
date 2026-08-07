@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { EmptyState } from '@/components/empty-state';
 import { colors, radii, spacing, typeScale } from '@/constants/theme';
+import { useStores } from '@/context/store-context';
 import { useTrades } from '@/context/trade-context';
 import { formatTradeDate } from '@/lib/trade';
 import type { TradeLine, TradeRecord } from '@/types/trade';
@@ -21,7 +22,7 @@ function formatLines(lines: TradeLine[]) {
   return lines.map((card) => `${card.qty}× ${card.name}`).join(', ');
 }
 
-function TradeHistoryCard({ trade }: { trade: TradeRecord }) {
+function TradeHistoryCard({ trade, storeName }: { trade: TradeRecord; storeName?: string }) {
   const givenQty = trade.given.reduce((total, card) => total + card.qty, 0);
   const receivedQty = trade.received.reduce((total, card) => total + card.qty, 0);
 
@@ -52,6 +53,13 @@ function TradeHistoryCard({ trade }: { trade: TradeRecord }) {
         </View>
       </View>
 
+      {storeName ? (
+        <View style={styles.locationRow}>
+          <Ionicons color={colors.accent} name="location-outline" size={17} />
+          <Text style={styles.locationText}>{storeName}</Text>
+        </View>
+      ) : null}
+
       {trade.notes ? <Text style={styles.notes}>{trade.notes}</Text> : null}
     </View>
   );
@@ -59,6 +67,7 @@ function TradeHistoryCard({ trade }: { trade: TradeRecord }) {
 
 export default function HistoryScreen() {
   const { trades, isLoading, errorMessage, refresh } = useTrades();
+  const { stores } = useStores();
 
   return (
     <SafeAreaView edges={['bottom']} style={styles.safeArea}>
@@ -94,7 +103,12 @@ export default function HistoryScreen() {
               tintColor={colors.accent}
             />
           }
-          renderItem={({ item }) => <TradeHistoryCard trade={item} />}
+          renderItem={({ item }) => (
+            <TradeHistoryCard
+              storeName={stores.find((store) => store.id === item.storeId)?.name}
+              trade={item}
+            />
+          )}
         />
       )}
     </SafeAreaView>
@@ -148,6 +162,18 @@ const styles = StyleSheet.create({
   listContent: {
     padding: spacing.lg,
     paddingBottom: 48,
+  },
+  locationRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: spacing.xs,
+    marginTop: spacing.md,
+  },
+  locationText: {
+    color: colors.accentSoft,
+    flex: 1,
+    fontSize: 12,
+    fontWeight: '700',
   },
   notes: {
     backgroundColor: colors.surfaceAlt,
