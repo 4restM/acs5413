@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import Input from './Input';
 import Button from '../ui/Button';
 import { getFormattedDate } from '../../util/date';
 import { GlobalStyles } from '../../constants/styles';
+import { sendLocalNotification } from '../../util/notifications';
 
 function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
   const [inputs, setInputs] = useState({
@@ -31,7 +32,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
     });
   }
 
-  function submitHandler() {
+  async function submitHandler() {
     const expenseData = {
       amount: +inputs.amount.value,
       date: new Date(inputs.date.value),
@@ -43,7 +44,8 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
     const descriptionIsValid = expenseData.description.trim().length > 0;
 
     if (!amountIsValid || !dateIsValid || !descriptionIsValid) {
-      // Alert.alert('Invalid input', 'Please check your input values');
+      // COURSE COMMENT: This validation branch prevents invalid data from
+      // reaching the expense context and sends the assignment's error notice.
       setInputs((curInputs) => {
         return {
           amount: { value: curInputs.amount.value, isValid: amountIsValid },
@@ -54,10 +56,22 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
           },
         };
       });
+      await sendLocalNotification({
+        title: 'Expense not saved',
+        body: 'Enter a positive amount, a valid date, and a description.',
+        data: { outcome: 'error' },
+      });
       return;
     }
 
     onSubmit(expenseData);
+    // COURSE COMMENT: This schedules an immediate local success notification
+    // after the valid expense has been added or updated in the app state.
+    await sendLocalNotification({
+      title: `Expense ${submitButtonLabel === 'Update' ? 'updated' : 'added'}`,
+      body: `${expenseData.description} was saved successfully.`,
+      data: { outcome: 'success' },
+    });
   }
 
   const formIsInvalid =

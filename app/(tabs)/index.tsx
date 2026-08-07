@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
+import { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import AllExpenses from '../../screens/AllExpenses';
 import { GlobalStyles } from '../../constants/styles';
 import IconButton from '../../components/ui/IconButton';
 import ExpensesContextProvider from '../../store/expenses-context';
+import { configureNotifications } from '../../util/notifications';
 
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
@@ -61,6 +62,12 @@ function ExpensesOverview() {
 }
 
 export default function App() {
+  useEffect(() => {
+    configureNotifications().catch((error) => {
+      console.warn('Notification setup failed:', error);
+    });
+  }, []);
+
   return (
     <>
       <StatusBar style="light" />
