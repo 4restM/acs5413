@@ -3,8 +3,7 @@ import * as Notifications from 'expo-notifications';
 
 const ANDROID_CHANNEL_ID = 'expense-feedback';
 
-// COURSE COMMENT: A foreground notification needs this handler. Without it,
-// a notification received while the app is open may be delivered silently.
+// Show notifications even while the app is open.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowBanner: true,
@@ -15,8 +14,7 @@ Notifications.setNotificationHandler({
 });
 
 export async function configureNotifications() {
-  // COURSE COMMENT: Android 8+ groups notifications into channels. This
-  // channel controls the importance and display behavior for expense feedback.
+  // Android needs a channel before it can show expense notifications.
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync(ANDROID_CHANNEL_ID, {
       name: 'Expense feedback',
@@ -26,8 +24,7 @@ export async function configureNotifications() {
     });
   }
 
-  // COURSE COMMENT: The app checks first so it only displays the operating
-  // system permission prompt when notification access has not been granted.
+  // Only show the permission prompt when access has not already been granted.
   const existingPermissions = await Notifications.getPermissionsAsync();
   let finalStatus = existingPermissions.status;
 
@@ -43,11 +40,11 @@ export async function sendLocalNotification({ title, body, data }) {
   try {
     const permissions = await Notifications.getPermissionsAsync();
     if (permissions.status !== Notifications.PermissionStatus.GRANTED) {
+      // The form still works if the user has notifications turned off.
       return false;
     }
 
-    // COURSE COMMENT: A null trigger sends immediately. Android uses the channel
-    // object instead so the notification gets the configured channel behavior.
+    // A null trigger is immediate on iOS; Android points to the channel instead.
     await Notifications.scheduleNotificationAsync({
       content: { title, body, data, sound: 'default' },
       trigger: Platform.OS === 'android' ? { channelId: ANDROID_CHANNEL_ID } : null,

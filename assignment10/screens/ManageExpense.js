@@ -10,6 +10,7 @@ import { ExpensesContext } from '../store/expenses-context';
 function ManageExpense({ route, navigation }) {
   const expensesCtx = useContext(ExpensesContext);
 
+  // An expense ID means this form is editing; no ID means it is adding.
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
 

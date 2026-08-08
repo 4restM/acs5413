@@ -44,8 +44,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
     const descriptionIsValid = expenseData.description.trim().length > 0;
 
     if (!amountIsValid || !dateIsValid || !descriptionIsValid) {
-      // COURSE COMMENT: This validation branch prevents invalid data from
-      // reaching the expense context and sends the assignment's error notice.
+      // Keep bad values out of shared state and mark the fields that need attention.
       setInputs((curInputs) => {
         return {
           amount: { value: curInputs.amount.value, isValid: amountIsValid },
@@ -56,6 +55,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
           },
         };
       });
+      // Send the validation result as an immediate local notification too.
       await sendLocalNotification({
         title: 'Expense not saved',
         body: 'Enter a positive amount, a valid date, and a description.',
@@ -65,8 +65,7 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
     }
 
     onSubmit(expenseData);
-    // COURSE COMMENT: This schedules an immediate local success notification
-    // after the valid expense has been added or updated in the app state.
+    // Confirm the save with an immediate local notification.
     await sendLocalNotification({
       title: `Expense ${submitButtonLabel === 'Update' ? 'updated' : 'added'}`,
       body: `${expenseData.description} was saved successfully.`,
@@ -110,8 +109,6 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
         invalid={!inputs.description.isValid}
         textInputConfig={{
           multiline: true,
-          // autoCapitalize: 'none'
-          // autoCorrect: false // default is true
           onChangeText: inputChangedHandler.bind(this, 'description'),
           value: inputs.description.value,
         }}

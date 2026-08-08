@@ -16,6 +16,7 @@ const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 
 function ExpensesOverview() {
+  // The tabs share one stack screen and split recent expenses from the full list.
   return (
     <BottomTabs.Navigator
       screenOptions={({ navigation }) => ({
@@ -63,6 +64,7 @@ function ExpensesOverview() {
 
 export default function App() {
   useEffect(() => {
+    // Set up the Android channel and ask for notification permission once.
     configureNotifications().catch((error) => {
       console.warn('Notification setup failed:', error);
     });

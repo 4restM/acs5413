@@ -7,6 +7,7 @@ import { getDateMinusDays } from '../util/date';
 function RecentExpenses() {
   const expensesCtx = useContext(ExpensesContext);
 
+  // Compare each date with the rolling seven-day window.
   const recentExpenses = expensesCtx.expenses.filter((expense) => {
     const today = new Date();
     const date7DaysAgo = getDateMinusDays(today, 7);

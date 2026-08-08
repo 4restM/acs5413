@@ -65,6 +65,7 @@ export const ExpensesContext = createContext({
 });
 
 function expensesReducer(state, action) {
+  // All expense changes go through this reducer so screens share the same data.
   switch (action.type) {
     case 'ADD':
       const id = new Date().toString() + Math.random().toString();
@@ -75,6 +76,7 @@ function expensesReducer(state, action) {
       );
       const updatableExpense = state[updatableExpenseIndex];
       const updatedItem = { ...updatableExpense, ...action.payload.data };
+      // Copy the array before replacing an item so React sees a new state value.
       const updatedExpenses = [...state];
       updatedExpenses[updatableExpenseIndex] = updatedItem;
       return updatedExpenses;
