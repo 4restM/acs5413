@@ -31,10 +31,10 @@ export default function TradeScreen() {
   // The camera repeats callbacks while a QR is visible; this blocks duplicate routes.
   const scannedRef = useRef(false);
 
-  // Allow another scan after returning from a match.
+  // Leave the camera off when coming back so it cannot rescan the same code.
   useFocusEffect(
     useCallback(() => {
-      scannedRef.current = false;
+      setMode('show');
       setErrorMessage(null);
     }, [])
   );
@@ -69,6 +69,7 @@ export default function TradeScreen() {
             <Pressable
               key={item}
               onPress={() => {
+                if (item === 'scan') scannedRef.current = false;
                 setMode(item);
                 setErrorMessage(null);
               }}
